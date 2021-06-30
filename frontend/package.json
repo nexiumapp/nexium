@@ -1,0 +1,37 @@
+{
+    "name": "nexium-frontend",
+    "version": "0.1.0",
+    "description": "Frontend for the Nexium mail service",
+    "author": "Dany Sluijk <hello@dany.dev> (https://dany.dev/)",
+    "private": true,
+    "sideEffects": "./src/index.tsx",
+    "type": "module",
+    "module": "./dist/index.html",
+    "browserslist": "> 0.2%",
+    "scripts": {
+        "start": "parcel -p 8000 ./src/index.html",
+        "build": "yarn clear-cache && parcel build ./src/index.html",
+        "serve": "yarn build && http-server ./dist -p 8000 -g -b --proxy http://localhost:8000?",
+        "analyse": "yarn clear-cache && PARCEL_BUNDLE_ANALYZER=true parcel build src/index.html --reporter @parcel/reporter-bundle-analyzer",
+        "lint": "eslint --max-warnings 0 --ext .js,.jsx,.ts,.tsx ./src && stylelint './src/**/*.scss'",
+        "clear-cache": "rm -rf dist .parcel-cache parcel-bundle-reports"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.14.6",
+        "@babel/plugin-transform-react-jsx": "^7.14.5",
+        "@parcel/reporter-bundle-analyzer": "^2.0.0-nightly.1694",
+        "@types/parcel-env": "^0.0.0",
+        "@typescript-eslint/eslint-plugin": "^4.28.1",
+        "@typescript-eslint/parser": "^4.28.1",
+        "eslint": "^7.29.0",
+        "eslint-config-prettier": "^8.3.0",
+        "http-server": "^0.12.3",
+        "parcel": "^2.0.0-beta.3.1",
+        "stylelint": "^13.13.1",
+        "stylelint-config-sass-guidelines": "^8.0.0",
+        "typescript": "^4.3.4"
+    },
+    "dependencies": {
+        "preact": "^10.5.13"
+    }
+}
