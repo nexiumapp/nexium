@@ -1,0 +1,35 @@
+.divider {
+    height: 1em;
+    font-size: 0.7em;
+    text-transform: uppercase;
+    color: var(--text-regular);
+    margin: 8px;
+    border: none;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &::before,
+    &::after {
+        content: "";
+        display: block;
+        height: 1px;
+        width: 48px;
+    }
+
+    &::before {
+        background: var(--text-regular);
+    }
+
+    &::after {
+        background: var(--text-regular);
+    }
+}
+
+.withtext {
+    &::before,
+    &::after {
+        margin: 0 12px;
+    }
+}

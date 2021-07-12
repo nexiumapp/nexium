@@ -1,0 +1,58 @@
+@import "../../mixins";
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 12vh 16px;
+    height: 100%;
+    box-shadow: 0 2px 4px var(--background-shadow);
+
+    background: var(--background-primary);
+    color: var(--text-regular);
+
+    @include breakpoint(sm) {
+        height: auto;
+        padding: 16px;
+        border-radius: 8px;
+
+        margin: 10vh 10vw;
+        width: 80vw;
+    }
+
+    @include breakpoint(md) {
+        margin: 10vh 20vw;
+        width: 60vw;
+    }
+
+    @include breakpoint(lg) {
+        margin: 10vh 25vw;
+        width: 50vw;
+    }
+
+    @include breakpoint(xl) {
+        margin: 10vh 30vw;
+        width: 40vw;
+    }
+
+    @include breakpoint(xxl) {
+        margin: 10vh 35vw;
+        width: 30vw;
+    }
+}
+
+.themeswitch {
+    position: absolute;
+    right: 12px;
+    top: 12vh;
+
+    @include breakpoint(sm) {
+        top: 16px;
+    }
+}

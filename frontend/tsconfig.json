@@ -10,7 +10,10 @@
         "jsx": "react",
         "jsxFactory": "h",
         "allowJs": false,
-        "baseUrl": "./src"
+        "baseUrl": "./src",
+        "paths": {
+            "/*": ["../*"]
+        }
     },
     "include": ["./src/**/*"],
     "exclude": ["node_modules"]
