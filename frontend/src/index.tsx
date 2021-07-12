@@ -1,10 +1,20 @@
 import { h, render } from "preact";
 
+import { ThemeProvider } from "./components/theme";
+import { Auth } from "./pages/authenticate";
+
+import "./global.scss";
+
 /**
  * Start the application.
  */
 const start = (): void => {
-    render(<div>Hello Nexium!</div>, document.body);
+    render(
+        <ThemeProvider>
+            <Auth />
+        </ThemeProvider>,
+        document.body,
+    );
 };
 
 /**

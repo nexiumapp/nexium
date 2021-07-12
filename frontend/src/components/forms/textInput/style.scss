@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 8px 4px;
+
+    label {
+        font-size: 0.8em;
+        margin-bottom: 4px;
+        color: var(--text-subscript);
+    }
+
+    input {
+        font-size: 16px;
+        padding: 8px 8px;
+        color: var(--text-subscript);
+        background: none;
+        border-radius: 4px;
+        border: 1px solid var(--text-subscript);
+        box-shadow: 0 1px 2px var(--background-shadow);
+    }
+}
