@@ -21,7 +21,7 @@ export const TextInput: FunctionalComponent<Props> = (props) => {
             <label for={props.id}>{props.title}</label>
             <input
                 id={props.id}
-                value={input}
+                value={props.value || input}
                 placeholder={props.placeholder}
                 type={props.type || "text"}
                 disabled={props.disabled}
@@ -42,6 +42,7 @@ interface Props {
     autocomplete?:
         | "off"
         | "on"
+        | "name"
         | "username"
         | "new-password"
         | "current-password";
@@ -49,6 +50,8 @@ interface Props {
     type?: "password" | "search" | "email" | "text";
     // If this input is disabled.
     disabled?: boolean;
+    // The value of the input, if regulated upstream.
+    value?: string;
 
     // Change event of the input.
     onInput?: (newValue: string) => void;
