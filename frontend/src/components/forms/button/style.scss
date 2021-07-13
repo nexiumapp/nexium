@@ -33,7 +33,7 @@
 }
 
 .full {
-    width: 100%;
+    width: calc(100% - 8px);
     padding: 12px;
     justify-content: center;
 }

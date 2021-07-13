@@ -1,10 +1,11 @@
 import { h, FunctionalComponent } from "preact";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 
+import Router from "preact-router";
+import AsyncRoute from "preact-async-route";
+
 import { IconButton } from "/src/components/forms";
 import { AvailableThemes, useTheme } from "/src/components/theme";
-
-import { Login } from "./login";
 
 import * as style from "./style.scss";
 
@@ -36,7 +37,21 @@ export const Auth: FunctionalComponent = () => {
                         onClick={() => switchTheme()}
                     />
                 </span>
-                <Login />
+                <Router>
+                    <AsyncRoute
+                        path="/auth/login"
+                        getComponent={() =>
+                            import("./login").then((f) => f["Login"])
+                        }
+                    />
+                    <AsyncRoute
+                        default
+                        path="/auth/register"
+                        getComponent={() =>
+                            import("./register").then((f) => f["Register"])
+                        }
+                    />
+                </Router>
             </div>
         </div>
     );
