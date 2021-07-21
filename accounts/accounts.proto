@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package accounts;
+
+service Accounts {
+    // Simple ping request, which responds after a set amount of seconds.
+    rpc Ping (PingRequest) returns (PingResponse);
+}
+
+message PingRequest {
+    // This defines the amount of seconds to wait before sending a response.
+    uint64 seconds = 1;
+}
+
+message PingResponse { }
