@@ -6,7 +6,7 @@ use thiserror::Error;
 #[serde(tag = "type", content = "content")]
 pub enum PingError {
     #[error("Delay needs to be at least 5 seconds")]
-    DelayTooLowError(),
+    DelayTooLowError,
     #[error("{0}")]
     RPCError(String),
 }

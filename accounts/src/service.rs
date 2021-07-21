@@ -16,7 +16,7 @@ impl proto::accounts_server::Accounts for AccountsService {
         let seconds = req.get_ref().seconds;
 
         if seconds < 5 {
-            return Err(crate::error::PingError::DelayTooLowError().into());
+            return Err(crate::error::PingError::DelayTooLowError.into());
         }
 
         sleep(Duration::from_secs(seconds)).await;

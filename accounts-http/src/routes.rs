@@ -11,7 +11,7 @@ async fn delay(rpc: &State<accounts::Client>, seconds: u64) -> Result<(), Value>
 
     if let Err(e) = res {
         return Err(match e {
-            PingError::DelayTooLowError() => {
+            PingError::DelayTooLowError => {
                 json!({ "code": DelayErrors::Validation, "message": "The delay needs to be at least 5 seconds long." })
             }
             PingError::RPCError(_) => {
