@@ -1,12 +1,12 @@
 use accounts::error::PingError;
-use rocket::{Route, State};
+use rocket::{serde::json::Json, Route, State};
 use serde::Serialize;
 use serde_json::{json, Value};
 
 /// This is a HTTP route which sends a ping request to the accounts service.
 /// It requires an `seconds` parameter, which is the amount of seconds the service will wait to respond.
 #[get("/<seconds>")]
-async fn delay(rpc: &State<accounts::Client>, seconds: u64) -> Result<(), Value> {
+async fn delay(rpc: &State<accounts::Client>, seconds: u64) -> Result<Json<DelayResponse>, Value> {
     let res = rpc.ping(seconds).await;
 
     if let Err(e) = res {
@@ -20,7 +20,7 @@ async fn delay(rpc: &State<accounts::Client>, seconds: u64) -> Result<(), Value>
         });
     }
 
-    Ok(())
+    Ok(Json(DelayResponse { seconds: seconds }))
 }
 
 /// Possible error codes returned to the client.
@@ -28,6 +28,12 @@ async fn delay(rpc: &State<accounts::Client>, seconds: u64) -> Result<(), Value>
 enum DelayErrors {
     Validation,
     RPC,
+}
+
+/// Success responses to the client.
+#[derive(Serialize)]
+struct DelayResponse {
+    seconds: u64,
 }
 
 /// A list of all routes to mount.
