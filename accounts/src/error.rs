@@ -21,3 +21,15 @@ impl Into<tonic::Status> for PingError {
         )
     }
 }
+
+impl From<tonic::Status> for PingError {
+    /// Convert a Tonic state into an ping error.
+    fn from(status: tonic::Status) -> Self {
+        match status.code() {
+            tonic::Code::Internal => serde_json::from_slice(status.details()).unwrap_or(
+                crate::error::PingError::RPCError("Failed to decode message.".into()),
+            ),
+            _ => crate::error::PingError::RPCError(status.to_string()),
+        }
+    }
+}
