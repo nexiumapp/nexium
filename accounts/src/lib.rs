@@ -13,7 +13,7 @@ impl Client {
     pub async fn connect(url: &'static str) -> Result<Client, Box<dyn std::error::Error>> {
         let conn = proto::accounts_client::AccountsClient::connect(url).await?;
 
-        Ok(Client { conn: conn })
+        Ok(Client { conn })
     }
 
     /// Send a ping request to the service.
@@ -22,7 +22,7 @@ impl Client {
         &self,
         seconds: u64,
     ) -> Result<proto::accounts_proto::PingResponse, error::PingError> {
-        let request = tonic::Request::new(proto::accounts_proto::PingRequest { seconds: seconds });
+        let request = tonic::Request::new(proto::accounts_proto::PingRequest { seconds });
         let res = self.conn.clone().ping(request).await;
 
         match res {
