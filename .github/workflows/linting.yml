@@ -1,0 +1,16 @@
+name: Linting
+on: [push, pull_request]
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: github/super-linter@v4
+              env:
+                  DEFAULT_BRANCH: master
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  CSS_FILE_NAME: "frontend/.stylelintrc.json"
+                  EDITORCONFIG_FILE_NAME: ".editorconfig"
+                  JAVASCRIPT_ES_CONFIG_FILE: "frontend/.eslintrc.json"
+                  JAVASCRIPT_DEFAULT_STYLE: "prettier"
