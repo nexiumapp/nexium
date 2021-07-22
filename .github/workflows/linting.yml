@@ -10,7 +10,17 @@ jobs:
               env:
                   DEFAULT_BRANCH: master
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  LINTER_RULES_PATH: "/"
                   CSS_FILE_NAME: "frontend/.stylelintrc.json"
                   EDITORCONFIG_FILE_NAME: ".editorconfig"
-                  JAVASCRIPT_ES_CONFIG_FILE: "frontend/.eslintrc.json"
-                  JAVASCRIPT_DEFAULT_STYLE: "prettier"
+                  TYPESCRIPT_ES_CONFIG_FILE: "frontend/.eslintrc.json"
+                  VALIDATE_CSS: true
+                  VALIDATE_DOCKERFILE: true
+                  VALIDATE_EDITORCONFIG: true
+                  VALIDATE_GITHUB_ACTIONS: true
+                  VALIDATE_MARKDOWN: true
+                  VALIDATE_PROTOBUF: true
+                  VALIDATE_RUST_2018: true
+                  VALIDATE_RUST_CLIPPY: true
+                  VALIDATE_TSX: true
+                  VALIDATE_TYPESCRIPT_ES: true
