@@ -15,7 +15,7 @@ h2,
 h3,
 h4,
 h5 {
-    margin: 4px 0 0 0;
+    margin: 4px 0 0;
     color: var(--text-header);
 }
 
@@ -35,7 +35,7 @@ a {
 }
 
 body[data-theme="light"] {
-    --background-primary: #ffffff;
+    --background-primary: #fff;
     --background-secondary: #f0f1f8;
     --background-shadow: #b2b2b2;
 
@@ -53,7 +53,7 @@ body[data-theme="dark"] {
     --background-secondary: #1b1921;
     --background-shadow: #0c0c0c;
 
-    --text-header: #ffffff;
+    --text-header: #fff;
     --text-regular: #fff;
     --text-subscript: #b6b6b6;
 

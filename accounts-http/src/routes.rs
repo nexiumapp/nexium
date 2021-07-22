@@ -14,20 +14,20 @@ async fn delay(rpc: &State<accounts::Client>, seconds: u64) -> Result<Json<Delay
             PingError::DelayTooLowError => {
                 json!({ "code": DelayErrors::Validation, "message": "The delay needs to be at least 5 seconds long." })
             }
-            PingError::RPCError(_) => {
-                json!({ "code": DelayErrors::RPC, "message": "Service communication error" })
+            PingError::RpcError(_) => {
+                json!({ "code": DelayErrors::Rpc, "message": "Service communication error" })
             }
         });
     }
 
-    Ok(Json(DelayResponse { seconds: seconds }))
+    Ok(Json(DelayResponse { seconds }))
 }
 
 /// Possible error codes returned to the client.
 #[derive(Serialize)]
 enum DelayErrors {
     Validation,
-    RPC,
+    Rpc,
 }
 
 /// Success responses to the client.

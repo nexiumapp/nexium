@@ -18,7 +18,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .add_service(proto::accounts_server::AccountsServer::new(
             service::AccountsService::default(),
         ))
-        .serve("[::1]:50051".parse().unwrap())
+        .serve("0.0.0.0:50051".parse().unwrap())
         .await?;
 
     Ok(())

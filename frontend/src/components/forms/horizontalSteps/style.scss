@@ -11,7 +11,7 @@
     font-size: 12px;
     width: auto;
 
-    &:before {
+    &::before {
         width: 16px;
         height: 16px;
         content: "";
@@ -25,7 +25,7 @@
         background: var(--highlight-text);
     }
 
-    &:after {
+    &::after {
         width: 100%;
         height: 2px;
         content: "";
@@ -36,7 +36,7 @@
         z-index: 0;
     }
 
-    &:first-child:after {
+    &:first-child::after {
         width: 50%;
         content: none;
     }
@@ -45,7 +45,7 @@
         color: var(--highlight-primary);
         font-weight: bold;
 
-        &:before {
+        &::before {
             border-color: var(--highlight-secondary);
             background: var(--highlight-primary);
         }
@@ -55,7 +55,7 @@
 .clickable {
     cursor: pointer;
 
-    &:hover:before {
+    &:hover::before {
         background: var(--highlight-primary);
     }
 }

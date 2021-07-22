@@ -1,0 +1,12 @@
+lint:
+  rules:
+    all_default: true
+    add:
+      - MESSAGES_HAVE_COMMENT
+      - RPCS_HAVE_COMMENT
+      - FIELDS_HAVE_COMMENT
+      - ENUMS_HAVE_COMMENT
+      - ENUM_FIELDS_HAVE_COMMENT
+  rules_option:
+    indent:
+      style: 4
