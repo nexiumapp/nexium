@@ -14,7 +14,7 @@ async fn delay(rpc: &State<accounts::Client>, seconds: u64) -> Result<Json<Delay
             PingError::DelayTooLowError => {
                 json!({ "code": DelayErrors::Validation, "message": "The delay needs to be at least 5 seconds long." })
             }
-            PingError::RPCError(_) => {
+            PingError::RpcError(_) => {
                 json!({ "code": DelayErrors::Rpc, "message": "Service communication error" })
             }
         });
