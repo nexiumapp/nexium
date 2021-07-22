@@ -4,9 +4,6 @@ on: [pull_request]
 jobs:
     frontend-size:
         runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: ./frontend
         steps:
             - uses: actions/checkout@v2
             - uses: preactjs/compressed-size-action@v2
@@ -14,3 +11,4 @@ jobs:
                   repo-token: "${{ secrets.GITHUB_TOKEN }}"
                   clean-script: "clear-cache"
                   strip-hash: "\\b\\w{8}\\."
+                  cwd: "./frontend"
