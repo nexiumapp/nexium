@@ -17,5 +17,3 @@ jobs:
           VALIDATE_GITHUB_ACTIONS: true
           VALIDATE_MARKDOWN: true
           VALIDATE_PROTOBUF: true
-          VALIDATE_RUST_2018: true
-          VALIDATE_RUST_CLIPPY: true
