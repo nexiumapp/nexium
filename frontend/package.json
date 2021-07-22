@@ -9,7 +9,6 @@
         "./src/global.scss"
     ],
     "type": "module",
-    "browserslist": "> 0.2%, not dead, not IE 11",
     "scripts": {
         "start": "parcel -p 8000 ./src/index.html",
         "build": "yarn clear-cache && parcel build ./src/index.html",
