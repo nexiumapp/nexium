@@ -8,7 +8,7 @@ pub enum PingError {
     #[error("Delay needs to be at least 5 seconds")]
     DelayTooLowError,
     #[error("{0}")]
-    RPCError(String),
+    RpcError(String),
 }
 
 impl From<PingError> for tonic::Status {
@@ -28,10 +28,10 @@ impl From<tonic::Status> for PingError {
         match status.code() {
             tonic::Code::Internal => {
                 serde_json::from_slice(status.details()).unwrap_or_else(|_| {
-                    crate::error::PingError::RPCError("Failed to decode message.".into())
+                    crate::error::PingError::RpcError("Failed to decode message.".into())
                 })
             }
-            _ => crate::error::PingError::RPCError(status.to_string()),
+            _ => crate::error::PingError::RpcError(status.to_string()),
         }
     }
 }
