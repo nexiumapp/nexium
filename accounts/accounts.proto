@@ -2,14 +2,19 @@ syntax = "proto3";
 
 package accounts;
 
+// Account management service.
 service Accounts {
     // Simple ping request, which responds after a set amount of seconds.
     rpc Ping (PingRequest) returns (PingResponse);
 }
 
+// Request data send to a ping request.
 message PingRequest {
     // This defines the amount of seconds to wait before sending a response.
     uint64 seconds = 1;
 }
 
-message PingResponse { }
+// Response expected from a normal ping request.
+message PingResponse {
+
+}
