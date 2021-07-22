@@ -8,8 +8,8 @@ jobs:
             - uses: actions/checkout@v2
             - run: rm -rf frontend/yarn.lock frontend/package-lock.json
             - uses: preactjs/compressed-size-action@v2
-              with:
-                  repo-token: "${{ secrets.GITHUB_TOKEN }}"
-                  clean-script: "clear-cache"
-                  strip-hash: "\\b\\w{8}\\."
-                  cwd: "./frontend"
+                with:
+                    repo-token: "${{ secrets.GITHUB_TOKEN }}"
+                    clean-script: "clear-cache"
+                    strip-hash: "\\b\\w{8}\\."
+                    cwd: "./frontend"

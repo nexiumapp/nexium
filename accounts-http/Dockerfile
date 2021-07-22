@@ -1,5 +1,5 @@
 # Load the base image to copy from.
-FROM nexium-base as base
+FROM nexium-base:latest as base
 
 # Build from the slim image.
 FROM debian:buster-slim
