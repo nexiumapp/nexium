@@ -1,0 +1,16 @@
+name: Frontend Compressed Size
+on: [pull_request]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./frontend
+        steps:
+            - uses: actions/checkout@v2
+            - uses: preactjs/compressed-size-action@v2
+              with:
+                  repo-token: "${{ secrets.GITHUB_TOKEN }}"`
+                  clean-script: "clear-cache"
+                  strip-hash: "\\b\\w{8}\\."
