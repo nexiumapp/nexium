@@ -4,6 +4,7 @@
         "indentation": 4,
         "order/properties-alphabetical-order": null,
         "string-quotes": "double",
-        "max-nesting-depth": 3
+        "max-nesting-depth": 3,
+        "selector-no-qualifying-type": null
     }
 }
