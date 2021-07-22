@@ -2,20 +2,20 @@ name: Linting
 on: [push, pull_request]
 
 jobs:
-    lint:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - uses: github/super-linter@v4
-                env:
-                    DEFAULT_BRANCH: master
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                    LINTER_RULES_PATH: "/"
-                    EDITORCONFIG_FILE_NAME: ".editorconfig"
-                    VALIDATE_DOCKERFILE: true
-                    VALIDATE_EDITORCONFIG: true
-                    VALIDATE_GITHUB_ACTIONS: true
-                    VALIDATE_MARKDOWN: true
-                    VALIDATE_PROTOBUF: true
-                    VALIDATE_RUST_2018: true
-                    VALIDATE_RUST_CLIPPY: true
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: github/super-linter@v4
+        env:
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LINTER_RULES_PATH: "/"
+          EDITORCONFIG_FILE_NAME: ".editorconfig"
+          VALIDATE_DOCKERFILE: true
+          VALIDATE_EDITORCONFIG: true
+          VALIDATE_GITHUB_ACTIONS: true
+          VALIDATE_MARKDOWN: true
+          VALIDATE_PROTOBUF: true
+          VALIDATE_RUST_2018: true
+          VALIDATE_RUST_CLIPPY: true

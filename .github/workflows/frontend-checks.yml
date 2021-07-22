@@ -2,27 +2,27 @@ name: Frontend Checks
 on: [push, pull_request]
 
 jobs:
-    lint:
-        runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: ./frontend
-        steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-node@v2
-                with:
-                    node-version: 14
-            - run: yarn
-            - run: yarn lint
-    build:
-        runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: ./frontend
-        steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-node@v2
-                with:
-                    node-version: 14
-            - run: yarn
-            - run: yarn build
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - run: yarn
+      - run: yarn lint
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - run: yarn
+      - run: yarn build
