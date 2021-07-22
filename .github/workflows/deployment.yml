@@ -33,7 +33,7 @@ jobs:
       - name: Push accounts image
         run: |
           IMAGE_ID=$(echo "ghcr.io/${{ github.repository_owner }}/accounts-http" | tr '[A-Z]' '[a-z]')
-          VERSION=$(echo "${{ github.ref }}" | cut -c1-7)
+          VERSION=$(echo "${{ github.sha }}" | cut -c1-7)
 
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
@@ -46,7 +46,7 @@ jobs:
       - name: Push accounts-http image
         run: |
           IMAGE_ID=$(echo "ghcr.io/${{ github.repository_owner }}/accounts-http" | tr '[A-Z]' '[a-z]')
-          VERSION=$(echo "${{ github.ref }}" | cut -c1-7)
+          VERSION=$(echo "${{ github.sha }}" | cut -c1-7)
 
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
@@ -59,7 +59,7 @@ jobs:
       - name: Push frontend image
         run: |
           IMAGE_ID=$(echo "ghcr.io/${{ github.repository_owner }}/frontend" | tr '[A-Z]' '[a-z]')
-          VERSION=$(echo "${{ github.ref }}" | cut -c1-7)
+          VERSION=$(echo "${{ github.sha }}" | cut -c1-7)
 
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
