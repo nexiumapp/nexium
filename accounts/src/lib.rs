@@ -10,7 +10,7 @@ pub struct Client {
 
 impl Client {
     /// Connect to the accounts service.
-    pub async fn connect(url: &'static str) -> Result<Client, Box<dyn std::error::Error>> {
+    pub async fn connect(url: String) -> Result<Client, Box<dyn std::error::Error>> {
         let conn = proto::accounts_client::AccountsClient::connect(url).await?;
 
         Ok(Client { conn })
