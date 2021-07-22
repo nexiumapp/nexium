@@ -1,10 +1,10 @@
 name: Deployment
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      # Temporally, remove before merge.
-      - feat/cd
+      - master
 
 jobs:
   publish:
