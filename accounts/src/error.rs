@@ -11,13 +11,13 @@ pub enum PingError {
     RPCError(String),
 }
 
-impl Into<tonic::Status> for PingError {
+impl From<PingError> for tonic::Status {
     /// Encode the error into a tonic status.
-    fn into(self) -> tonic::Status {
+    fn from(err: PingError) -> tonic::Status {
         tonic::Status::with_details(
             tonic::Code::Internal,
-            self.to_string(),
-            serde_json::to_string(&self).unwrap().into(),
+            err.to_string(),
+            serde_json::to_string(&err).unwrap().into(),
         )
     }
 }
@@ -26,9 +26,11 @@ impl From<tonic::Status> for PingError {
     /// Convert a Tonic state into an ping error.
     fn from(status: tonic::Status) -> Self {
         match status.code() {
-            tonic::Code::Internal => serde_json::from_slice(status.details()).unwrap_or(
-                crate::error::PingError::RPCError("Failed to decode message.".into()),
-            ),
+            tonic::Code::Internal => {
+                serde_json::from_slice(status.details()).unwrap_or_else(|_| {
+                    crate::error::PingError::RPCError("Failed to decode message.".into())
+                })
+            }
             _ => crate::error::PingError::RPCError(status.to_string()),
         }
     }
