@@ -9,7 +9,7 @@ jobs:
       - run: rm -rf frontend/yarn.lock frontend/package-lock.json
       - uses: preactjs/compressed-size-action@v2
         with:
-          pattern: "./dist/{js,css,html}"
+          pattern: "./dist/*.{js,css,html}"
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           clean-script: "clear-cache"
           strip-hash: "\\.[0-9a-z]{8}"
