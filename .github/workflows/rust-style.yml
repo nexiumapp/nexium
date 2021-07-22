@@ -15,12 +15,12 @@ jobs:
           args: --all-targets --all-features --verbose -- -D warnings
   fmt:
     runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v1
-        - uses: actions-rs/toolchain@v1
-          with:
-            components: rustfmt
-        - uses: actions-rs/cargo@v1
-          with:
-            command: fmt
-            args: --all -- --check
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        with:
+          components: rustfmt
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
