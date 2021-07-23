@@ -1,6 +1,8 @@
 #[macro_use]
 extern crate rocket;
 
+use std::net::Ipv4Addr;
+
 mod routes;
 
 /// Start the http server.
@@ -10,7 +12,11 @@ async fn main() -> Result<(), rocket::Error> {
         .await
         .expect("Failed to connect to the accounts service.");
 
-    rocket::build()
+    let figment = rocket::Config::figment()
+        .merge(("address", Ipv4Addr::UNSPECIFIED))
+        .merge(("ident", "Nexium Accounts"));
+
+    rocket::custom(figment)
         .mount("/api/accounts", routes::routes())
         .manage(client)
         .launch()
