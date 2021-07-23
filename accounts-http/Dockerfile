@@ -5,10 +5,10 @@ FROM nexium-base:base as base
 FROM debian:buster-slim
 
 # Copy the binary from the base image.
-COPY --from=base /nexium/target/release/accounts .
+COPY --from=base /nexium/target/release/accounts-http .
 
 # Port to serve on.
-EXPOSE 50051
+EXPOSE 8000
 
 # Start the binary.
-CMD ["./accounts"]
+CMD ["./accounts-http"]
