@@ -22,10 +22,10 @@ impl<'a> DelayErrors {
     }
 }
 
-impl Into<Status> for DelayErrors {
-    fn into(self) -> Status {
-        match self {
-            Self::LowDelay(_) => Status::BadRequest,
+impl From<DelayErrors> for Status {
+    fn from(err: DelayErrors) -> Self {
+        match err {
+            DelayErrors::LowDelay(_) => Status::BadRequest,
         }
     }
 }
