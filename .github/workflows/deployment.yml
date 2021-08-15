@@ -2,9 +2,6 @@ name: Deployment
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
 
 jobs:
   publish:
@@ -16,13 +13,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build base image
-        run: docker build . --tag nexium-base:base
-
-      - name: Build accounts image
-        run: docker build ./accounts --tag accounts
-
-      - name: Build accounts-http image
-        run: docker build ./accounts-http --tag accounts-http
+        run: docker build ./backend --tag backend
 
       - name: Build frontend image
         run: docker build ./frontend --tag frontend
@@ -30,41 +21,28 @@ jobs:
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Push accounts image
+      - name: Push backend image
         run: |
-          IMAGE_ID=$(echo "ghcr.io/${{ github.repository_owner }}/accounts" | tr '[A-Z]' '[a-z]')
+          IMAGE_ID=$(echo "ghcr.io/${{ github.repository_owner }}/backend" | tr '[:upper:]' '[:lower:]')
           VERSION=$(echo "${{ github.sha }}" | cut -c1-7)
 
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
+          echo "IMAGE_ID=$IMAGE_ID"
+          echo "VERSION=$VERSION"
 
-          docker tag accounts:latest $IMAGE_ID:latest
-          docker tag accounts:latest $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:latest
-          docker push $IMAGE_ID:$VERSION
-
-      - name: Push accounts-http image
-        run: |
-          IMAGE_ID=$(echo "ghcr.io/${{ github.repository_owner }}/accounts-http" | tr '[A-Z]' '[a-z]')
-          VERSION=$(echo "${{ github.sha }}" | cut -c1-7)
-
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-
-          docker tag accounts-http:latest $IMAGE_ID:latest
-          docker tag accounts-http:latest $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:latest
-          docker push $IMAGE_ID:$VERSION
+          docker tag backend:latest "$IMAGE_ID:latest"
+          docker tag backend:latest "$IMAGE_ID:$VERSION"
+          docker push "$IMAGE_ID:latest"
+          docker push "$IMAGE_ID:$VERSION"
 
       - name: Push frontend image
         run: |
-          IMAGE_ID=$(echo "ghcr.io/${{ github.repository_owner }}/frontend" | tr '[A-Z]' '[a-z]')
+          IMAGE_ID=$(echo "ghcr.io/${{ github.repository_owner }}/frontend" | tr '[:upper:]' '[:lower:]')
           VERSION=$(echo "${{ github.sha }}" | cut -c1-7)
 
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
+          echo "IMAGE_ID=$IMAGE_ID"
+          echo "VERSION=$VERSION"
 
-          docker tag frontend:latest $IMAGE_ID:latest
-          docker tag frontend:latest $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:latest
-          docker push $IMAGE_ID:$VERSION
+          docker tag frontend:latest "$IMAGE_ID:latest"
+          docker tag frontend:latest "$IMAGE_ID:$VERSION"
+          docker push "$IMAGE_ID:latest"
+          docker push "$IMAGE_ID:$VERSION"
