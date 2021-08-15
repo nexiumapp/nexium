@@ -5,7 +5,7 @@ use tokio::time::sleep;
 
 mod error;
 
-/// This is a HTTP route which sends a ping request to the accounts service.
+/// This is a HTTP route which has a delay before responding.
 /// It requires an `seconds` parameter, which is the amount of seconds the service will wait to respond.
 #[get("/<seconds>")]
 pub async fn delay(seconds: u64) -> Result<Json<DelayResponse>, error::DelayErrors> {
