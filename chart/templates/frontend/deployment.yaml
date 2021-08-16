@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexium-frontend
+  labels:
+    app: nexium-frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nexium-frontend
+  template:
+    metadata:
+      labels:
+        app: nexium-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: ghcr.io/nexiumapp/frontend:77d03fd
+          ports:
+            - containerPort: 8000
