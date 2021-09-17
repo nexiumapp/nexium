@@ -9,11 +9,19 @@ jobs:
     permissions:
       packages: write
       contents: read
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: nexium
+          POSTGRES_DB: nexium
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build base image
+      - name: Build backend image
         run: docker build ./backend --tag backend
+        env:
+          DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
 
       - name: Build frontend image
         run: docker build ./frontend --tag frontend

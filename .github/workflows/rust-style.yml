@@ -4,6 +4,12 @@ on: [push, pull_request]
 jobs:
   clippy:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: nexium
+          POSTGRES_DB: nexium
     steps:
       - uses: actions/checkout@v1
       - uses: actions-rs/toolchain@v1
@@ -14,6 +20,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --all-targets --all-features --verbose -- -D warnings
+        env:
+          DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
   fmt:
     runs-on: ubuntu-latest
     steps:
