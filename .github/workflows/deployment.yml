@@ -6,14 +6,13 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    container: rust:buster
     permissions:
       packages: write
       contents: read
     services:
       postgres:
         image: postgres:13
-        ports:
-          - 5432:5432
         env:
           POSTGRES_PASSWORD: nexium
           POSTGRES_DB: nexium

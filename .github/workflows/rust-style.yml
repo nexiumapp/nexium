@@ -4,11 +4,10 @@ on: [push, pull_request]
 jobs:
   clippy:
     runs-on: ubuntu-latest
+    container: rust:buster
     services:
       postgres:
         image: postgres:13
-        ports:
-          - 5432:5432
         env:
           POSTGRES_PASSWORD: nexium
           POSTGRES_DB: nexium
