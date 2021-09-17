@@ -1,6 +1,5 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn;
 
 /// This is a JSON responder derive macro.
 /// It makes it easy to implement a rocket responder by just deriving it on the response struct.
