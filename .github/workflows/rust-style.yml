@@ -12,6 +12,12 @@ jobs:
           POSTGRES_DB: nexium
     steps:
       - uses: actions/checkout@v1
+      - uses: actions-rs/install@v0.1
+        with:
+          crate: sqlx-cli
+          version: latest
+      - name: Run Sqlx migrations
+        run: sqlx migrate run
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable

@@ -17,7 +17,12 @@ jobs:
           POSTGRES_DB: nexium
     steps:
       - uses: actions/checkout@v2
-
+      - uses: actions-rs/install@v0.1
+        with:
+          crate: sqlx-cli
+          version: latest
+      - name: Run Sqlx migrations
+        run: sqlx migrate run
       - name: Build backend image
         run: docker build ./backend --tag backend
         env:
