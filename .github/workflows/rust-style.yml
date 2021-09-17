@@ -18,6 +18,8 @@ jobs:
           version: latest
       - name: Run Sqlx migrations
         run: sqlx migrate run
+        env:
+          DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable

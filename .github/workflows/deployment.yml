@@ -23,11 +23,12 @@ jobs:
           version: latest
       - name: Run Sqlx migrations
         run: sqlx migrate run
+        env:
+          DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
       - name: Build backend image
         run: docker build ./backend --tag backend
         env:
           DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
-
       - name: Build frontend image
         run: docker build ./frontend --tag frontend
 
