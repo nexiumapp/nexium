@@ -21,8 +21,9 @@ jobs:
         with:
           crate: sqlx-cli
           version: latest
+          use-tool-cache: true
       - name: Run Sqlx migrations
-        run: sqlx migrate run
+        run: cd backend && sqlx migrate run && cd ..
         env:
           DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
       - name: Build backend image
