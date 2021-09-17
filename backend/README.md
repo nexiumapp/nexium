@@ -27,6 +27,6 @@ sqlx migrate run
 
 Now the backend can be started:
 
-```
+```bash
 cargo run
 ```
