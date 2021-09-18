@@ -16,9 +16,10 @@ pub async fn route(
 ) -> Result<Json<Response>, RouteError> {
     let mut conn = pool.begin().await.map_err(RouteError::DatabaseError)?;
 
-    if let Some(_) = Account::find_username(&mut conn, data.username.as_str())
+    if Account::find_username(&mut conn, data.username.as_str())
         .await
         .map_err(RouteError::DatabaseError)?
+        .is_some()
     {
         return Err(RouteError::AccountExists(data.username.clone()));
     }
