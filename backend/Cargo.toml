@@ -4,6 +4,15 @@ version = "0.1.0"
 authors = ["Nexium Team"]
 edition = "2018"
 
+[lib]
+name = "nexium_lib"
+path = "src/lib.rs"
+proc-macro = true
+
+[[bin]]
+name = "nexium"
+path = "src/main.rs"
+
 [dependencies]
 rocket = { version = "0.5.0-rc.1", features = ["json"] }
 tokio = { version = "1.0", features = ["macros", "rt-multi-thread"] }
@@ -15,3 +24,15 @@ env_logger = "0.9.0"
 postbus = "0.2.0"
 async-trait = "0.1.51"
 mailparse = "0.13.6"
+syn = "1.0.76"
+quote = "1.0.9"
+sqlx = { version = "0.5.7", default-features = false, features = [
+    "runtime-tokio-rustls",
+    "macros",
+    "migrate",
+    "postgres",
+    "uuid",
+] }
+uuid = { version = "0.8.2", features = ["serde", "v4"] }
+argon2 = "0.3.1"
+zxcvbn = "2.1.1"

@@ -2,16 +2,22 @@ extern crate log;
 #[macro_use]
 extern crate rocket;
 
+mod database;
 mod http;
+mod logic;
 mod smtp;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     env_logger::init();
 
-    let runtime = tokio::runtime::Runtime::new().unwrap();
+    // Connect to the database.
+    let db = database::connect("postgres://postgres:nexium@localhost/nexium")
+        .await
+        .expect("Failed to initialize database.");
 
     // Start the SMTP server.
-    runtime.spawn(smtp::start());
+    tokio::spawn(smtp::start(db.clone()));
     // Start the HTTP server.
-    runtime.block_on(http::start());
+    http::start(db).await;
 }

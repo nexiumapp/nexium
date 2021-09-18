@@ -6,15 +6,37 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    container: rust:buster
     permissions:
       packages: write
       contents: read
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: nexium
+          POSTGRES_DB: nexium
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v2
-
-      - name: Build base image
+      - uses: actions-rs/install@v0.1
+        with:
+          crate: sqlx-cli
+          version: latest
+      - name: Run Sqlx migrations
+        run: cd backend && sqlx migrate run && cd ..
+        env:
+          DATABASE_URL: "postgres://postgres:nexium@localhost/nexium"
+      - name: Build backend image
         run: docker build ./backend --tag backend
-
+        env:
+          DATABASE_URL: "postgres://postgres:nexium@localhost/nexium"
       - name: Build frontend image
         run: docker build ./frontend --tag frontend
 
