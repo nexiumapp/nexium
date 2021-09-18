@@ -29,7 +29,6 @@ jobs:
         with:
           crate: sqlx-cli
           version: latest
-          use-tool-cache: true
       - name: Run Sqlx migrations
         run: cd backend && sqlx migrate run && cd ..
         env:
