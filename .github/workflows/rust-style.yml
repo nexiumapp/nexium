@@ -4,13 +4,14 @@ on: [push, pull_request]
 jobs:
   clippy:
     runs-on: ubuntu-latest
-    container: rust:buster
     services:
       postgres:
         image: postgres:13
         env:
           POSTGRES_PASSWORD: nexium
           POSTGRES_DB: nexium
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -26,7 +27,7 @@ jobs:
       - name: Run Sqlx migrations
         run: cd backend && sqlx migrate run && cd ..
         env:
-          DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
+          DATABASE_URL: "postgres://postgres:nexium@localhost/nexium"
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
@@ -36,7 +37,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --all-targets --all-features --verbose -- -D warnings
         env:
-          DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
+          DATABASE_URL: "postgres://postgres:nexium@localhost/nexium"
   fmt:
     runs-on: ubuntu-latest
     steps:
