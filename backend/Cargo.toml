@@ -34,3 +34,5 @@ sqlx = { version = "0.5.7", default-features = false, features = [
     "uuid",
 ] }
 uuid = { version = "0.8.2", features = ["serde", "v4"] }
+argon2 = "0.3.1"
+zxcvbn = "2.1.1"

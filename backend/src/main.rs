@@ -4,6 +4,7 @@ extern crate rocket;
 
 mod database;
 mod http;
+mod logic;
 mod smtp;
 
 #[tokio::main]
