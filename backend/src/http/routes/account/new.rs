@@ -13,14 +13,11 @@ pub async fn route(
     data: Json<BodyData>,
     pool: &State<Pool<Postgres>>,
 ) -> Result<Json<Response>, RouteError> {
-    let mut conn = pool
-        .acquire()
-        .await
-        .map_err(|e| RouteError::DatabaseError(e))?;
+    let mut conn = pool.acquire().await.map_err(RouteError::DatabaseError)?;
 
     match Account::find_username(&mut conn, data.username.as_str())
         .await
-        .map_err(|e| RouteError::DatabaseError(e))?
+        .map_err(RouteError::DatabaseError)?
     {
         Some(_) => (),
         None => return Err(RouteError::AccountExists(data.username.clone())),
@@ -28,7 +25,7 @@ pub async fn route(
 
     let account = Account::create(&mut conn, data.username.as_str())
         .await
-        .map_err(|e| RouteError::DatabaseError(e))?;
+        .map_err(RouteError::DatabaseError)?;
 
     info!(
         "New account created for {} ({}).",
