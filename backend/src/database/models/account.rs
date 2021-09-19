@@ -13,7 +13,7 @@ impl Account {
     pub async fn create(conn: &mut PgConnection, username: &str) -> Result<Self, sqlx::Error> {
         let account = sqlx::query_as!(
             Account,
-            "INSERT INTO accounts (username) VALUES ($1) RETURNING id, username",
+            "INSERT INTO account (username) VALUES ($1) RETURNING id, username",
             &username,
         )
         .fetch_one(conn)
@@ -29,7 +29,7 @@ impl Account {
     ) -> Result<Option<Self>, sqlx::Error> {
         let account = sqlx::query_as!(
             Account,
-            "SELECT id, username FROM accounts WHERE username = $1",
+            "SELECT id, username FROM account WHERE username = $1",
             &username,
         )
         .fetch_optional(conn)

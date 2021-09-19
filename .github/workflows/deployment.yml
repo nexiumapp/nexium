@@ -16,8 +16,6 @@ jobs:
         env:
           POSTGRES_PASSWORD: nexium
           POSTGRES_DB: nexium
-        ports:
-          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -32,11 +30,11 @@ jobs:
       - name: Run Sqlx migrations
         run: cd backend && sqlx migrate run && cd ..
         env:
-          DATABASE_URL: "postgres://postgres:nexium@localhost/nexium"
+          DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
       - name: Build backend image
         run: docker build ./backend --tag backend
         env:
-          DATABASE_URL: "postgres://postgres:nexium@localhost/nexium"
+          DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
       - name: Build frontend image
         run: docker build ./frontend --tag frontend
 
