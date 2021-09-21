@@ -13,6 +13,10 @@ pub fn get() -> Result<Environment, String> {
         )?,
     };
 
+    if jwt_secret.len() < 256 {
+        return Err("The JWT secrets is required to be at least 265 characters long.".to_string());
+    }
+
     Ok(Environment {
         jwt_secret,
         database_url,

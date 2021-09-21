@@ -42,3 +42,4 @@ ipnetwork = { version = "0.17.0" }
 chrono = { version = "0.4.19", features = ["serde"] }
 rand = "0.8.4"
 dotenv = "0.15.0"
+jsonwebtoken = "7.2.0"

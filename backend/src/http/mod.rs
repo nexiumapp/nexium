@@ -3,6 +3,7 @@ use std::net::Ipv4Addr;
 
 use crate::environment::Environment;
 
+mod guards;
 mod routes;
 
 /// Start the http server.
@@ -15,6 +16,7 @@ pub async fn start(conn: Pool<Postgres>, env: Environment) {
 
     rocket::custom(figment)
         .mount("/api/account", routes::account::routes())
+        .mount("/api/session", routes::session::routes())
         .manage(conn)
         .manage(env)
         .launch()
