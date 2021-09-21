@@ -13,6 +13,10 @@ proc-macro = true
 name = "nexium"
 path = "src/main.rs"
 
+[profile.release]
+lto = true
+codegen-units = 1
+
 [dependencies]
 rocket = { version = "0.5.0-rc.1", features = ["json"] }
 tokio = { version = "1.0", features = ["macros", "rt-multi-thread"] }
@@ -43,3 +47,4 @@ chrono = { version = "0.4.19", features = ["serde"] }
 rand = "0.8.4"
 dotenv = "0.15.0"
 jsonwebtoken = "7.2.0"
+rust-embed = "6.2.0"
