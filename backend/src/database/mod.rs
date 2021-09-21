@@ -1,7 +1,9 @@
 use sqlx::{migrate::Migrator, postgres::PgPoolOptions, Pool, Postgres};
 use std::time::Duration;
 
-pub mod models;
+mod tables;
+
+pub use tables::*;
 
 static MIGRATOR: Migrator = sqlx::migrate!();
 

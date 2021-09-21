@@ -1,11 +1,13 @@
+use sqlx::{Pool, Postgres};
 use std::net::Ipv4Addr;
 
-use sqlx::{Pool, Postgres};
+use crate::environment::Environment;
 
+mod guards;
 mod routes;
 
 /// Start the http server.
-pub async fn start(conn: Pool<Postgres>) {
+pub async fn start(conn: Pool<Postgres>, env: Environment) {
     let figment = rocket::Config::figment()
         .merge(("address", Ipv4Addr::UNSPECIFIED))
         .merge(("ident", "Nexium"));
@@ -14,8 +16,9 @@ pub async fn start(conn: Pool<Postgres>) {
 
     rocket::custom(figment)
         .mount("/api/account", routes::account::routes())
-        .mount("/api/delay", routes::delay::routes())
+        .mount("/api/session", routes::session::routes())
         .manage(conn)
+        .manage(env)
         .launch()
         .await
         .expect("Could not start HTTP service.");

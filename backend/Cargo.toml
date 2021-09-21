@@ -32,7 +32,14 @@ sqlx = { version = "0.5.7", default-features = false, features = [
     "migrate",
     "postgres",
     "uuid",
+    "ipnetwork",
+    "chrono",
 ] }
 uuid = { version = "0.8.2", features = ["serde", "v4"] }
 argon2 = "0.3.1"
 zxcvbn = "2.1.1"
+ipnetwork = { version = "0.17.0" }
+chrono = { version = "0.4.19", features = ["serde"] }
+rand = "0.8.4"
+dotenv = "0.15.0"
+jsonwebtoken = "7.2.0"
