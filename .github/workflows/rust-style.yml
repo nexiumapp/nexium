@@ -25,9 +25,9 @@ jobs:
         run: sqlx migrate run
         env:
           DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
-      - name: Build frontend
+      - name: Install frontend dependencies
         working-directory: ./frontend
-        run: yarn build
+        run: yarn install
       - name: Install Clippy
         run: rustup component add clippy
       - name: Run Clippy
