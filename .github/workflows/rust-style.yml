@@ -4,7 +4,7 @@ on: [push]
 jobs:
   clippy:
     runs-on: ubuntu-latest
-    container: dsluijk/rust-sqlx:latest
+    container: dsluijk/rust-sqlx-node:latest
     defaults:
       run:
         working-directory: ./backend
