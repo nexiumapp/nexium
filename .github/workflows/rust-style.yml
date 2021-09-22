@@ -32,14 +32,11 @@ jobs:
       - uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-targets --all-features --verbose -- -D warnings
+          args: --all-targets --all-features --verbose --manifest-path ./backend/Cargo.toml -- -D warnings
         env:
           DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
   fmt:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
     steps:
       - uses: actions/checkout@v1
       - uses: actions-rs/toolchain@v1
@@ -49,4 +46,4 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: fmt
-          args: --all -- --check
+          args: --all --manifest-path ./backend/Cargo.toml -- --check

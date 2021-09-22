@@ -5,7 +5,7 @@ fn main() {
     println!("cargo:rerun-if-changed=../frontend/package.json");
     println!("cargo:rerun-if-changed=../frontend/src");
 
-    if std::env::var("PROFILE").unwrap() != "release".to_string() {
+    if std::env::var("PROFILE").unwrap() != *"release" {
         return;
     }
 
