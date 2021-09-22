@@ -21,10 +21,6 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v1
-      - uses: actions-rs/install@v0.1
-        with:
-          crate: sqlx-cli
-          version: latest
       - name: Run Sqlx migrations
         run: cd backend && sqlx migrate run && cd ..
         env:
