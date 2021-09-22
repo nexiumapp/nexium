@@ -1,5 +1,5 @@
 name: Rust style checks
-on: [push, pull_request]
+on: [push]
 
 jobs:
   clippy:
@@ -29,10 +29,8 @@ jobs:
         with:
           toolchain: stable
           components: clippy
-      - uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-targets --all-features --manifest-path ./backend/Cargo.toml -- -D warnings
+      - name: Run Clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
         env:
           DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
   fmt:
