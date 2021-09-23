@@ -31,14 +31,10 @@ jobs:
       - name: Build frontend
         working-directory: ./frontend
         run: yarn build
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          components: clippy
-      - uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-targets --all-features --manifest-path ./backend/Cargo.toml -- -D warnings
+      - name: Install Clippy
+        run: rustup component add clippy
+      - name: Run Clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
         env:
           DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
   fmt:
