@@ -1,17 +1,19 @@
 name: Rust style checks
-on: [push, pull_request]
+on: [push]
 
 jobs:
   clippy:
     runs-on: ubuntu-latest
+    container: dsluijk/rust-sqlx-node:latest
+    defaults:
+      run:
+        working-directory: ./backend
     services:
       postgres:
         image: postgres:13
         env:
           POSTGRES_PASSWORD: nexium
           POSTGRES_DB: nexium
-        ports:
-          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -19,24 +21,22 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v1
-      - uses: actions-rs/install@v0.1
-        with:
-          crate: sqlx-cli
-          version: latest
       - name: Run Sqlx migrations
-        run: cd backend && sqlx migrate run && cd ..
+        run: sqlx migrate run
         env:
-          DATABASE_URL: "postgres://postgres:nexium@localhost/nexium"
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          components: clippy
-      - uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-targets --all-features --verbose -- -D warnings
+          DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: yarn install
+      - name: Build frontend
+        working-directory: ./frontend
+        run: yarn build
+      - name: Install Clippy
+        run: rustup component add clippy
+      - name: Run Clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
         env:
-          DATABASE_URL: "postgres://postgres:nexium@localhost/nexium"
+          DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
   fmt:
     runs-on: ubuntu-latest
     steps:
@@ -48,4 +48,4 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: fmt
-          args: --all -- --check
+          args: --all --manifest-path ./backend/Cargo.toml -- --check
