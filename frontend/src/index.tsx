@@ -1,7 +1,19 @@
-import { h, render } from "preact";
+/**
+ * Include the debug code if it's a development build.
+ * This has to be the first import, therefore the non-standard ordering.
+ */
+if (process.env.NODE_ENV === "development") {
+    import("preact/debug");
+}
 
-import { ThemeProvider } from "./components/theme";
-import { Auth } from "./pages/authenticate";
+import { h, render } from "preact";
+import { Provider } from "react-redux";
+import { Router } from "preact-router";
+
+import AsyncRoute from "preact-async-route";
+
+import { ThemeProvider } from "/src/components/theme";
+import { store } from "/src/store";
 
 import "./global.scss";
 
@@ -10,23 +22,30 @@ import "./global.scss";
  */
 const start = (): void => {
     render(
-        <ThemeProvider>
-            <Auth />
-        </ThemeProvider>,
+        <Provider store={store}>
+            <ThemeProvider>
+                <Router>
+                    <AsyncRoute
+                        path="/app"
+                        getComponent={() =>
+                            import("/src/pages/app").then((f) => f["App"])
+                        }
+                    />
+                    <AsyncRoute
+                        default
+                        path="/auth"
+                        getComponent={() =>
+                            import("/src/pages/authenticate").then(
+                                (f) => f["Auth"],
+                            )
+                        }
+                    />
+                </Router>
+            </ThemeProvider>
+        </Provider>,
         document.body,
     );
 };
-
-/**
- * Include the debug code if it's a development build.
- */
-if (process.env.NODE_ENV === "development") {
-    import("preact/debug");
-
-    if (module.hot) {
-        module.hot.accept();
-    }
-}
 
 /**
  * Let's start!

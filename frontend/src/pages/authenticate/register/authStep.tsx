@@ -5,10 +5,16 @@ import {
     faKey,
     faStepBackward,
 } from "@fortawesome/free-solid-svg-icons";
+import { Result } from "neverthrow";
 
 import { Button, TextInput } from "/src/components/forms";
 import { Icon } from "/src/components/media";
 import { Divider } from "/src/components/layout";
+import { useAppDispatch } from "/src/store";
+import { registerPassword } from "/src/store/session";
+import { ApiError } from "/src/api";
+import { CreateError } from "/src/api/account";
+import { Account } from "/src/models";
 
 import * as style from "./style.scss";
 
@@ -18,8 +24,10 @@ import * as style from "./style.scss";
  * @returns The JSX for the step.
  */
 export const AuthStep: FunctionalComponent<Props> = (props) => {
+    const [error, setError] = useState("");
     const [password, setPassword] = useState("");
     const [repeatedPassword, setRepeatedPassword] = useState("");
+    const dispatch = useAppDispatch();
 
     const isPasswordValid = useMemo(() => {
         if (password.length < 3) return false;
@@ -28,8 +36,31 @@ export const AuthStep: FunctionalComponent<Props> = (props) => {
         return true;
     }, [password, repeatedPassword]);
 
+    const register = async () => {
+        // Dispatch the register with password thunk.
+        const dispatched = await dispatch(
+            registerPassword({
+                fullName: "John Doe",
+                username: "johndoe",
+                password,
+            }),
+        );
+
+        // Decode the result, this contains the result of the registration.
+        const res: Result<
+            Account,
+            ApiError<CreateError>
+        > = dispatched.payload as any;
+
+        // Display the error if the registration failed.
+        if (res.isErr()) {
+            setError(res.error.error);
+        }
+    };
+
     return (
         <Fragment>
+            {error && <span>{error}</span>}
             <TextInput
                 id="password"
                 title="Password"
@@ -50,6 +81,7 @@ export const AuthStep: FunctionalComponent<Props> = (props) => {
                 alt="Register with an Password"
                 full
                 disabled={!isPasswordValid}
+                onClick={() => register()}
             >
                 <Icon icon={faAsterisk} pad />
                 Register with Password

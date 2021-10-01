@@ -7,7 +7,7 @@ use crate::logic::account::Account;
 pub async fn create(conn: &mut PgConnection, username: &str) -> Result<Account, sqlx::Error> {
     let account = sqlx::query_as!(
         Account,
-        "INSERT INTO account (username, displayname) VALUES ($1, $2) RETURNING *",
+        "INSERT INTO account (username, full_name) VALUES ($1, $2) RETURNING *",
         &username,
         &username
     )

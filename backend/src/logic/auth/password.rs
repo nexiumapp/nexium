@@ -61,7 +61,7 @@ impl AuthPassword {
             return false;
         }
 
-        complexity.unwrap().score() > 3
+        complexity.unwrap().score() >= 3
     }
 
     /// Hash an plaintext to an format suitable for storage.
