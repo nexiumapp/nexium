@@ -26,7 +26,17 @@ async fn main() {
         .expect("Failed to initialize database.");
 
     // Start the SMTP server.
-    tokio::spawn(smtp::start(db.clone()));
+    let smtp = smtp::start(db.clone());
     // Start the HTTP server.
-    http::start(db, env).await;
+    let http = http::start(db, env);
+
+    // Wait for either future to return, then quit.
+    tokio::select! {
+        _ = smtp => {
+            info!("SMTP service exited, goodbye!");
+        }
+        _ = http => {
+            info!("HTTP service exited, goodbye!");
+        }
+    }
 }
