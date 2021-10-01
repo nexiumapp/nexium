@@ -4,7 +4,7 @@ on: [push]
 jobs:
   clippy:
     runs-on: ubuntu-latest
-    container: dsluijk/rust-sqlx-node:latest
+    container: dsluijk/rust-sqlx:latest
     defaults:
       run:
         working-directory: ./backend
@@ -25,12 +25,6 @@ jobs:
         run: sqlx migrate run
         env:
           DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
-      - name: Install frontend dependencies
-        working-directory: ./frontend
-        run: yarn install
-      - name: Build frontend
-        working-directory: ./frontend
-        run: yarn build
       - name: Install Clippy
         run: rustup component add clippy
       - name: Run Clippy
