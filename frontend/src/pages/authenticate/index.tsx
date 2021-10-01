@@ -1,11 +1,13 @@
 import { h, FunctionalComponent } from "preact";
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import { route } from "preact-router";
 
-import Router from "preact-router";
 import AsyncRoute from "preact-async-route";
+import Router from "preact-router";
 
 import { IconButton } from "/src/components/forms";
 import { AvailableThemes, useTheme } from "/src/components/theme";
+import { useAppSelector } from "/src/store";
 
 import * as style from "./style.scss";
 
@@ -16,6 +18,13 @@ import * as style from "./style.scss";
  */
 export const Auth: FunctionalComponent = () => {
     const [theme, setTheme] = useTheme();
+    const isLoggedin = useAppSelector((state) => state.session.loggedIn);
+
+    // Redirect to the app if the user is logged in.
+    if (isLoggedin) {
+        route("/app");
+        return;
+    }
 
     const switchTheme = (): void => {
         const newTheme =

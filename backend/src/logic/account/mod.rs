@@ -7,10 +7,11 @@ use crate::database;
 
 /// Representing an account of an user.
 #[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Account {
     pub id: Uuid,
     pub username: String,
-    pub displayname: String,
+    pub full_name: String,
 }
 
 impl Account {
