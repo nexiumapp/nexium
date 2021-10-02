@@ -92,5 +92,5 @@ pub enum CreateError {
     #[error("The password could not be hashed")]
     HashError,
     #[error("An internal database error occured.")]
-    DatabaseError(sqlx::Error),
+    DatabaseError(#[from] sqlx::Error),
 }

@@ -19,7 +19,7 @@
         "serve": "yarn build && http-server ./dist -p 8001 -g -b --proxy http://localhost:8000?",
         "analyse": "yarn clear-cache && PARCEL_BUNDLE_ANALYZER=true parcel build src/index.html --reporter @parcel/reporter-bundle-analyzer",
         "lint": "eslint --max-warnings 0 --ext .js,.jsx,.ts,.tsx ./src && stylelint './src/**/*.scss'",
-        "clear-cache": "rm -rf dist .parcel-cache parcel-bundle-reports"
+        "clear-cache": "rm -rf dist/** .parcel-cache parcel-bundle-reports && touch dist/.gitkeep"
     },
     "devDependencies": {
         "@babel/core": "^7.14.6",

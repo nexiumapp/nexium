@@ -107,12 +107,5 @@ pub enum DecodeError {
     #[error("Token decoding failed.")]
     DecodeError,
     #[error("An internal database error occured.")]
-    DatabaseError(sqlx::Error),
-}
-
-/// Change an sqlx error to an decode error.
-impl From<sqlx::Error> for DecodeError {
-    fn from(e: sqlx::Error) -> Self {
-        DecodeError::DatabaseError(e)
-    }
+    DatabaseError(#[from] sqlx::Error),
 }

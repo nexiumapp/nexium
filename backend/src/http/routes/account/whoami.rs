@@ -2,7 +2,7 @@ use crate::{
     http::guards::{AccessTokenGuard, AccessTokenGuardError},
     logic,
 };
-use nexium_lib::JsonResponder;
+use jsonresponder::JsonResponder;
 use rocket::{http::Status, serde::json::Json, State};
 use serde::Serialize;
 use sqlx::{Pool, Postgres};
@@ -35,7 +35,7 @@ pub enum RouteError {
     #[error("Access denied.")]
     AccessDenied,
     #[error("An internal database error occured.")]
-    DatabaseError(sqlx::Error),
+    DatabaseError(#[from] sqlx::Error),
 }
 
 impl<'a> RouteError {
@@ -72,12 +72,5 @@ impl From<logic::account::FindError> for RouteError {
             logic::account::FindError::NotFound => RouteError::AccessDenied,
             logic::account::FindError::DatabaseError(e) => RouteError::DatabaseError(e),
         }
-    }
-}
-
-impl From<sqlx::Error> for RouteError {
-    /// Wrap the sqlx errors in the correct route error.
-    fn from(e: sqlx::Error) -> Self {
-        RouteError::DatabaseError(e)
     }
 }

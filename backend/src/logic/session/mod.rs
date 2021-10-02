@@ -59,5 +59,5 @@ pub enum CreateError {
     #[error("Failed to parse the IP address")]
     IpParseError,
     #[error("An internal database error occured.")]
-    DatabaseError(sqlx::Error),
+    DatabaseError(#[from] sqlx::Error),
 }

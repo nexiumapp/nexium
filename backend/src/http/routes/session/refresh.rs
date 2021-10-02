@@ -1,5 +1,5 @@
+use jsonresponder::JsonResponder;
 use jsonwebtoken::EncodingKey;
-use nexium_lib::JsonResponder;
 use rocket::http::Status;
 use rocket::serde::{json::Json, Serialize};
 use rocket::State;
@@ -48,7 +48,7 @@ pub enum RouteError {
     #[error("An internal error occured.")]
     InternalError,
     #[error("An internal database error occured.")]
-    DatabaseError(sqlx::Error),
+    DatabaseError(#[from] sqlx::Error),
 }
 
 impl<'a> RouteError {
