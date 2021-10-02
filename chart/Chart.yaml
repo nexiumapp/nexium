@@ -1,7 +1,0 @@
-apiVersion: v2
-name: nexium
-description: The next generation email server.
-
-type: application
-version: 0.1.0
-appVersion: "0.1.0"

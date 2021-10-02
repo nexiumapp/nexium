@@ -75,7 +75,7 @@ pub enum CreateError {
     #[error("The account with username '{0}' already exists.")]
     AccountExists(String),
     #[error("An internal database error occured.")]
-    DatabaseError(sqlx::Error),
+    DatabaseError(#[from] sqlx::Error),
 }
 
 /// Possible errors with finding an account.
@@ -84,12 +84,5 @@ pub enum FindError {
     #[error("The account was not found.")]
     NotFound,
     #[error("An internal database error occured.")]
-    DatabaseError(sqlx::Error),
-}
-
-impl From<sqlx::Error> for FindError {
-    /// Translate an Sqlx error into an FindError.
-    fn from(e: sqlx::Error) -> Self {
-        FindError::DatabaseError(e)
-    }
+    DatabaseError(#[from] sqlx::Error),
 }

@@ -16,7 +16,7 @@ struct Frontend;
 /// Provides the index HTML file on the root.
 #[cfg(feature = "embedded-frontend")]
 #[get("/")]
-fn index<'r>() -> Result<(ContentType, Cow<'r, [u8]>), Status> {
+async fn index<'r>() -> Result<(ContentType, Cow<'r, [u8]>), Status> {
     let file = match Frontend::get("index.html") {
         Some(file) => file,
         None => return Err(Status::NotFound),
@@ -28,7 +28,7 @@ fn index<'r>() -> Result<(ContentType, Cow<'r, [u8]>), Status> {
 /// Tries to serve the rest of the resources too.
 #[cfg(feature = "embedded-frontend")]
 #[get("/<path..>")]
-fn subresource<'r>(path: PathBuf) -> Result<(ContentType, Cow<'r, [u8]>), Status> {
+async fn subresource<'r>(path: PathBuf) -> Result<(ContentType, Cow<'r, [u8]>), Status> {
     let path_str = match path.to_str() {
         Some(path) => path,
         None => return Err(Status::NotFound),
@@ -36,7 +36,7 @@ fn subresource<'r>(path: PathBuf) -> Result<(ContentType, Cow<'r, [u8]>), Status
 
     let file = match Frontend::get(path_str) {
         Some(file) => file,
-        None => return index(),
+        None => return index().await,
     };
 
     Ok((get_content_type(path)?, file.data))

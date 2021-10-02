@@ -94,5 +94,5 @@ pub enum RefreshTokenGuardError {
     #[error("An internal server error occured.")]
     InternalError,
     #[error("An database error occured.")]
-    DatabaseError(sqlx::Error),
+    DatabaseError(#[from] sqlx::Error),
 }
