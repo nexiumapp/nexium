@@ -20,6 +20,8 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 // Type of the dispatch function.
 export type AppDispatch = typeof store.dispatch;
+// Type of the options for thunk functions.
+export type ThunkOptions = { dispatch: AppDispatch; state: RootState };
 
 // Typed useDispatch hook.
 export const useAppDispatch = () => useDispatch<AppDispatch>();
