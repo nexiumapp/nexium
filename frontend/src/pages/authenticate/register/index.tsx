@@ -112,7 +112,7 @@ export const Register: FunctionalComponent = () => {
                 placeholder="John.Doe42"
                 hook={fields.username}
             />
-            <span class={style.usernameSplit} />
+            <span class={style.usernamesplit} />
             <form onSubmit={(e) => e.preventDefault()}>
                 <TextInput
                     id="password"
