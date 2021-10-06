@@ -25,8 +25,7 @@ impl Account {
 
         // Check if the user already exists, and return an error if it does.
         if database::account::find_username(conn, username)
-            .await
-            .map_err(CreateError::DatabaseError)?
+            .await?
             .is_some()
         {
             return Err(CreateError::AccountExists(username.to_string()));
@@ -34,14 +33,22 @@ impl Account {
 
         // Create an new account.
         // This does not create authentication, this should be created separately.
-        Ok(database::account::create(conn, username)
-            .await
-            .map_err(CreateError::DatabaseError)?)
+        Ok(database::account::create(conn, username).await?)
     }
 
     /// Find an user by ID.
     pub async fn find(conn: &mut PgConnection, id: &Uuid) -> Result<Self, FindError> {
         let res = database::account::find(conn, id).await?;
+
+        match res {
+            Some(account) => Ok(account),
+            None => Err(FindError::NotFound),
+        }
+    }
+
+    /// Find an user by username.
+    pub async fn find_username(conn: &mut PgConnection, username: &str) -> Result<Self, FindError> {
+        let res = database::account::find_username(conn, username).await?;
 
         match res {
             Some(account) => Ok(account),

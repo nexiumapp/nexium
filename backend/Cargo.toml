@@ -29,7 +29,7 @@ sqlx = { version = "0.5.7", default-features = false, features = [
     "chrono",
 ] }
 uuid = { version = "0.8.2", features = ["serde", "v4"] }
-argon2 = "0.3.1"
+argon2 = { version = "0.3.1", features = ["std"] }
 zxcvbn = "2.1.1"
 ipnetwork = { version = "0.17.0" }
 chrono = { version = "0.4.19", features = ["serde"] }
