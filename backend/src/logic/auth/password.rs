@@ -1,5 +1,5 @@
 use argon2::{
-    password_hash::{errors::Error, rand_core::OsRng, SaltString},
+    password_hash::{self, rand_core::OsRng, SaltString},
     Algorithm, Argon2, Params, PasswordHash, PasswordHasher, PasswordVerifier,
 };
 use serde::Serialize;
@@ -33,16 +33,29 @@ impl AuthPassword {
         let hash = Self::hash(password.to_string()).map_err(|_| CreateError::HashError)?;
 
         // Save the password to the database.
-        let auth = database::auth_password::create(conn, account.id, hash)
-            .await
-            .map_err(CreateError::DatabaseError)?;
+        let auth = database::auth_password::create(conn, account.id, hash).await?;
 
         Ok(auth)
     }
 
+    /// Authenticate an account with the password.
+    /// This fetches and compares the hash associated with this account.
+    pub async fn authenticate(
+        conn: &mut PgConnection,
+        account: &Account,
+        plaintext: &str,
+    ) -> Result<(), AuthenticateError> {
+        let pw = database::auth_password::get(conn, account.id)
+            .await?
+            .ok_or(AuthenticateError::NoPassword)?;
+        AuthPassword::compare(pw.hash, plaintext)?;
+
+        Ok(())
+    }
+
     /// Compare an hashed password with an plaintext.
     /// Only returns Ok when the password is valid, error otherwise.
-    pub fn _compare(hash: String, plaintext: String) -> Result<(), Error> {
+    fn compare(hash: String, plaintext: &str) -> Result<(), password_hash::Error> {
         let parsed = PasswordHash::new(&hash)?;
         let context = Self::create_context();
 
@@ -65,7 +78,7 @@ impl AuthPassword {
     }
 
     /// Hash an plaintext to an format suitable for storage.
-    fn hash(plaintext: String) -> Result<String, Error> {
+    fn hash(plaintext: String) -> Result<String, password_hash::Error> {
         let salt = SaltString::generate(&mut OsRng);
         let context = Self::create_context();
 
@@ -91,6 +104,17 @@ pub enum CreateError {
     PasswordComplexity,
     #[error("The password could not be hashed")]
     HashError,
+    #[error("An internal database error occured.")]
+    DatabaseError(#[from] sqlx::Error),
+}
+
+/// Possible errors which occur when logging in.
+#[derive(Error, Debug)]
+pub enum AuthenticateError {
+    #[error("This account does not have password authentication.")]
+    NoPassword,
+    #[error("The given password is incorrect.")]
+    IncorrectPassword(#[from] password_hash::Error),
     #[error("An internal database error occured.")]
     DatabaseError(#[from] sqlx::Error),
 }

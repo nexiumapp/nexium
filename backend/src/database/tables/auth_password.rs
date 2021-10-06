@@ -8,14 +8,26 @@ pub async fn create(
     account: Uuid,
     hash: String,
 ) -> Result<AuthPassword, sqlx::Error> {
-    let auth = sqlx::query_as!(
+    sqlx::query_as!(
         AuthPassword,
         "INSERT INTO auth_password (account, hash) VALUES ($1, $2) RETURNING *",
         &account,
         &hash
     )
     .fetch_one(conn)
-    .await?;
+    .await
+}
 
-    Ok(auth)
+/// Get an authentication method by the account.
+pub async fn get(
+    conn: &mut PgConnection,
+    account: Uuid,
+) -> Result<Option<AuthPassword>, sqlx::Error> {
+    sqlx::query_as!(
+        AuthPassword,
+        "SELECT * FROM auth_password WHERE account = $1",
+        &account,
+    )
+    .fetch_optional(conn)
+    .await
 }

@@ -38,9 +38,7 @@ impl Session {
         )
         .map_err(|_| CreateError::IpParseError)?;
 
-        let session = database::session::new(conn, account.id, ip)
-            .await
-            .map_err(CreateError::DatabaseError)?;
+        let session = database::session::new(conn, account.id, ip).await?;
 
         Ok(session)
     }

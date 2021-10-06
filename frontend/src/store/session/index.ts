@@ -35,7 +35,11 @@ export const sessionSlice = createSlice({
 export const { setUser, setToken, logoutUser, setIntervalID } =
     sessionSlice.actions;
 // Re-export the thunks.
-export const { registerPassword, enableSessionRefresh, disableSessionRefresh } =
-    thunks;
+export const {
+    registerPassword,
+    loginPassword,
+    enableSessionRefresh,
+    disableSessionRefresh,
+} = thunks;
 // Export the reducer.
 export default sessionSlice.reducer;
