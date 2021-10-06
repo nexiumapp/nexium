@@ -1,3 +1,13 @@
+.error {
+    margin: 0.4em 0 0.1em;
+    color: var(--text-error);
+}
+
+.usernameSplit {
+    display: flex;
+    height: 8px;
+}
+
 .bottombutton {
     margin-top: 18px;
 }

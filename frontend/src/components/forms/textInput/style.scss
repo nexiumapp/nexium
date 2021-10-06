@@ -4,10 +4,22 @@
     width: 100%;
     margin: 8px 4px;
 
+    .labels {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+    }
+
     label {
         font-size: 0.8em;
         margin-bottom: 4px;
         color: var(--text-subscript);
+    }
+
+    span {
+        float: right;
+        color: var(--text-error);
+        font-size: 0.9em;
     }
 
     input {

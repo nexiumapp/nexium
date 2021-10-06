@@ -46,6 +46,8 @@ body[data-theme="light"] {
     --highlight-primary: #fca311;
     --highlight-secondary: #fcbf49;
     --highlight-text: #f7edde;
+
+    --text-error: #ed4337;
 }
 
 body[data-theme="dark"] {
@@ -60,4 +62,6 @@ body[data-theme="dark"] {
     --highlight-primary: #fca311;
     --highlight-secondary: #fcbf49;
     --highlight-text: #f7edde;
+
+    --text-error: #ed4337;
 }

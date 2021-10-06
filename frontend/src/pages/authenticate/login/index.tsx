@@ -1,79 +1,85 @@
 import { h, FunctionalComponent, Fragment } from "preact";
-import { useMemo, useState } from "preact/hooks";
 import { faLock, faKey } from "@fortawesome/free-solid-svg-icons";
 
 import { Button, TextInput } from "/src/components/forms";
 import { Icon } from "/src/components/media";
 import { Divider } from "/src/components/layout";
+import { useInput } from "/src/hooks";
 
 /**
  * Renders the login box with the different authentication methods.
  * @returns The login component.
  */
-export const Login: FunctionalComponent = () => (
-    <main>
-        <h2>Let's Get You Signed In!</h2>
-        <h4>
-            You can also{" "}
-            <a href="/auth/register" alt="Register">
-                register here
-            </a>
-            .
-        </h4>
-        <PasswordLogin />
-        <Divider text="or" />
-        <WebauthnLogin />
-    </main>
-);
+export const Login: FunctionalComponent = () => {
+    const fields = {
+        username: useInput(true, (value) => {
+            if (value.length < 3) {
+                return "Username is too short.";
+            }
 
-/**
- *
- * @returns JSX of the password login component.
- */
-const PasswordLogin: FunctionalComponent = () => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+            if (value.length > 50) {
+                return "Username is too long.";
+            }
 
-    const isValid = useMemo(() => {
-        if (username.length < 3) return false;
-        if (password.length < 3) return false;
-        if (!/^([a-z]|[A-Z]|[0-9]|[-_.]){3,}$/.test(username)) return false;
+            if (!/^([A-Z]|[a-z]|\d)+$/.test(value)) {
+                return "Only letters and numbers are allowed.";
+            }
 
-        return true;
-    }, [username, password]);
+            return true;
+        }),
+        password: useInput(true, (value) => {
+            if (value.length < 3) {
+                return "Password is too short.";
+            }
+
+            if (value.length > 200) {
+                return "Password is too long.";
+            }
+
+            return true;
+        }),
+    };
 
     return (
-        <Fragment>
-            <TextInput
-                id="username"
-                title="Username"
-                autocomplete="username"
-                placeholder="John.Doe42"
-                onInput={(username) => setUsername(username)}
-            />
-            <TextInput
-                id="password"
-                title="Password"
-                type="password"
-                autocomplete="current-password"
-                placeholder="hunter123"
-                onInput={(password) => setPassword(password)}
-            />
-            <Button alt="Login with Password" disabled={!isValid} full>
-                <Icon icon={faLock} pad />
-                Login
+        <main>
+            <h2>Let's Get You Signed In!</h2>
+            <h4>
+                New here? {""}
+                <a href="/auth/register" alt="Register">
+                    Register Instead
+                </a>
+                .
+            </h4>
+            <Fragment>
+                <TextInput
+                    id="username"
+                    title="Username"
+                    autocomplete="username"
+                    placeholder="John.Doe42"
+                    hook={fields.username}
+                />
+                <TextInput
+                    id="password"
+                    title="Password"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="hunter123"
+                    hook={fields.password}
+                />
+                <Button
+                    full
+                    alt="Login with Password"
+                    disabled={!(fields.password[2] && fields.username[2])}
+                >
+                    <Icon icon={faLock} pad />
+                    Login
+                </Button>
+            </Fragment>
+            <Divider text="or" />
+            <Button full alt="Login with WebAuthn">
+                <Icon icon={faKey} pad />
+                Login with WebAuthn
             </Button>
-        </Fragment>
+        </main>
     );
 };
-
-/**
- * Display the elements used for WebAuthn authentication.
- * @returns JSX of the webauthn login component.
- */
-const WebauthnLogin: FunctionalComponent = () => (
-    <Button alt="Login with WebAuthn" full>
-        <Icon icon={faKey} pad />
-        Login with WebAuthn
-    </Button>
-);

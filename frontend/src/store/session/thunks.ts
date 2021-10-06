@@ -66,7 +66,6 @@ const registerPassword = createAsyncThunk<
  * Registration data required for the corresponding thunk.
  */
 interface RegisterPasswordAction {
-    fullName: string;
     username: string;
     password: string;
 }
