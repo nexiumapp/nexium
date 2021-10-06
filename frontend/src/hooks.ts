@@ -37,27 +37,12 @@ export const useInput = (
 ): InputHook => {
     const [input, setInput] = useState<string>("");
     const [valid, setValid] = useState<boolean>(!(required || !validate("")));
-    const [blurred, setBlurred] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
     // Callback to call when the input is changed.
     const inputCallback = (input: string) => {
         const result = validate(input);
         setInput(input);
-
-        if (typeof result !== "boolean") {
-            setValid(false);
-            setError(blurred ? result : "");
-        } else {
-            setValid(result);
-            setError("");
-        }
-    };
-
-    // Callback to call when the input is blurred.
-    const blurCallback = () => {
-        const result = validate(input);
-        setBlurred(true);
 
         if (typeof result !== "boolean") {
             setValid(false);
@@ -68,7 +53,7 @@ export const useInput = (
         }
     };
 
-    return [input, error, valid, inputCallback, setError, blurCallback];
+    return [input, error, valid, inputCallback, setError];
 };
 
 /**
@@ -87,5 +72,4 @@ export type InputHook = [
     boolean,
     (input: string) => void,
     (error: string) => void,
-    () => void,
 ];

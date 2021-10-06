@@ -5,7 +5,7 @@ import { InputHook } from "/src/hooks";
 import * as style from "./style.scss";
 
 export const TextInput: FunctionalComponent<Props> = (props) => {
-    const [input, error, , inputCallback, , blurCallback] = props.hook;
+    const [input, error, , inputCallback] = props.hook;
 
     const inputListener = (e: InputEvent, newValue: string): void => {
         e.preventDefault();
@@ -30,7 +30,6 @@ export const TextInput: FunctionalComponent<Props> = (props) => {
                 autocomplete={props.autocomplete || "off"}
                 disabled={props.disabled}
                 onInput={(e: any) => inputListener(e, e.target.value)}
-                onBlur={blurCallback}
             />
         </div>
     );
