@@ -26,6 +26,7 @@ export const Button: FunctionalComponent<RenderableProps<Props>> = (props) => {
 
     return (
         <button
+            type={props.type}
             class={styles}
             alt={props.alt}
             disabled={props.disabled || loading}
@@ -39,6 +40,8 @@ export const Button: FunctionalComponent<RenderableProps<Props>> = (props) => {
 interface Props {
     // Alternative text for the button.
     alt: string;
+    // The type of the button.
+    type?: "button" | "submit" | "reset";
     // If the button is disabled.
     disabled?: boolean;
     // If this button should fill the width of the container.
