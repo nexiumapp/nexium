@@ -2,6 +2,7 @@ import { Result } from "neverthrow";
 
 import { Account } from "/src/models/account";
 import { AuthType } from "/src/models/session";
+import { AppDispatch } from "/src/store";
 
 import { ApiError, post } from "../";
 
@@ -11,13 +12,19 @@ import { ApiError, post } from "../";
  * @param auth authentication method to attach to the account.
  */
 export const login = async (
+    dispatch: AppDispatch,
     username: string,
     auth: AuthType,
 ): Promise<Result<LoginResponse, ApiError<LoginError>>> => {
-    return await post<LoginResponse, LoginError>("/api/session/login", "", {
-        username,
-        auth,
-    });
+    return await post<LoginResponse, LoginError>(
+        dispatch,
+        "/api/session/login",
+        "",
+        {
+            username,
+            auth,
+        },
+    );
 };
 
 /**

@@ -1,5 +1,7 @@
 import { Result } from "neverthrow";
 
+import { AppDispatch } from "/src/store";
+
 import { ApiError, post } from "../";
 
 /**
@@ -7,9 +9,11 @@ import { ApiError, post } from "../";
  * @param refresh The refresh token to use.
  */
 export const refresh = async (
+    dispatch: AppDispatch,
     refresh: string,
 ): Promise<Result<RefreshResponse, ApiError<RefreshError>>> => {
     return await post<RefreshResponse, RefreshError>(
+        dispatch,
         "/api/session/refresh",
         refresh,
     );

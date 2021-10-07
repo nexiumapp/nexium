@@ -46,6 +46,7 @@
         "preact-async-route": "^2.2.1",
         "preact-router": "^3.2.1",
         "react-redux": "^7.2.5",
+        "redux-persist": "^6.0.0",
         "regenerator-runtime": "^0.13.7"
     }
 }
