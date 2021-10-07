@@ -38,6 +38,7 @@ export const { setUser, setToken, logoutUser, setIntervalID } =
 export const {
     registerPassword,
     loginPassword,
+    refreshAccessToken,
     enableSessionRefresh,
     disableSessionRefresh,
 } = thunks;

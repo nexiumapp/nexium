@@ -29,7 +29,7 @@ const registerPassword = createAsyncThunk<
         };
 
         // Create the account by the API.
-        const result = await create(action.username, authType);
+        const result = await create(dispatch, action.username, authType);
 
         // Return the error if the creation failed.
         if (result.isErr()) {
@@ -90,7 +90,7 @@ const loginPassword = createAsyncThunk<
         };
 
         // Login the account by the API.
-        const result = await login(action.username, authType);
+        const result = await login(dispatch, action.username, authType);
 
         // Return the error if logging in failed.
         if (result.isErr()) {
@@ -133,52 +133,61 @@ interface LoginPasswordAction {
 }
 
 /**
+ * Refresh the access token.
+ */
+const refreshAccessToken = createAsyncThunk<void, undefined, ThunkOptions>(
+    "session/refreshAccessToken",
+    async (_, { dispatch, getState }) => {
+        const state = getState();
+
+        // Sanity check if the tokens are set.
+        if (!state.session.tokens) {
+            dispatch(disableSessionRefresh());
+            dispatch(logoutUser());
+            return;
+        }
+
+        // Send the refresh request.
+        const res = await refresh(dispatch, state.session.tokens.refresh);
+
+        // Check if the request succeeded.
+        if (res.isErr()) {
+            // Ignore the error if the refresh token is not invalid but did return an error.
+            if (!(res.error.code === "accessdenied")) {
+                return;
+            }
+
+            // If the access is denied, log the user out.
+            dispatch(disableSessionRefresh());
+            dispatch(logoutUser());
+            return;
+        }
+
+        // Set the new access token.
+        dispatch(
+            setToken({
+                access: res.value.accessToken,
+                refresh: getState().session.tokens.refresh,
+            }),
+        );
+    },
+);
+
+/**
  * Enable session refreshing.
  */
 const enableSessionRefresh = createAsyncThunk<void, undefined, ThunkOptions>(
     "session/enableSessionRefresh",
-    (_, { dispatch, getState }) => {
-        const doRefresh = async () => {
-            const state = getState();
-
-            // Sanity check if the tokens are set.
-            if (!state.session.tokens) {
-                dispatch(disableSessionRefresh());
-                dispatch(logoutUser());
-                return;
-            }
-
-            // Send the refresh request.
-            const res = await refresh(state.session.tokens.refresh);
-
-            // Check if the request succeeded.
-            if (res.isErr()) {
-                // Ignore the error if the refresh token is not invalid but did return an error.
-                if (!(res.error.code === "accessdenied")) {
-                    return;
-                }
-
-                // If the access is denied, log the user out.
-                dispatch(disableSessionRefresh());
-                dispatch(logoutUser());
-                return;
-            }
-
-            // Set the new access token.
-            dispatch(
-                setToken({
-                    access: res.value.accessToken,
-                    refresh: getState().session.tokens.refresh,
-                }),
-            );
-        };
-
+    (_, { dispatch }) => {
         // Create the interval.
-        const id = window.setInterval(doRefresh, 12 * 60 * 1000);
+        const id = window.setInterval(
+            () => dispatch(refreshAccessToken()),
+            12 * 60 * 1000,
+        );
         dispatch(setIntervalID({ id }));
 
         // Run the refresh immidiately.
-        doRefresh();
+        dispatch(refreshAccessToken());
     },
 );
 
@@ -207,6 +216,7 @@ const disableSessionRefresh = createAsyncThunk<void, undefined, ThunkOptions>(
 export const thunks = {
     registerPassword,
     loginPassword,
+    refreshAccessToken,
     enableSessionRefresh,
     disableSessionRefresh,
 };
