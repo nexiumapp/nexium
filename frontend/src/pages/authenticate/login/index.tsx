@@ -32,7 +32,7 @@ export const Login: FunctionalComponent = () => {
                 return "Username is too long.";
             }
 
-            if (!/^([A-Z]|[a-z]|\d)+$/.test(value)) {
+            if (!/^[A-Za-z0-9]+(\.[A-Za-z0-9]+)*$/.test(value)) {
                 return "Only letters and numbers are allowed.";
             }
 
