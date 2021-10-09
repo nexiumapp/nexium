@@ -1,3 +1,5 @@
+use lazy_static::lazy_static;
+use regex::Regex;
 use rocket::serde::Serialize;
 use sqlx::PgConnection;
 use thiserror::Error;
@@ -57,7 +59,12 @@ impl Account {
     }
 
     /// Validate that a username is valid alphanumeric and of proper length.
+    /// Dots in the middle of the string is allowed.
     fn validate_username(username: &str) -> bool {
+        lazy_static! {
+            static ref REGEX: Regex = Regex::new("^[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*$").unwrap();
+        }
+
         if username.len() < 3 {
             return false;
         }
@@ -66,7 +73,7 @@ impl Account {
             return false;
         }
 
-        if !username.chars().all(char::is_alphanumeric) {
+        if !REGEX.is_match(username) {
             return false;
         }
 
