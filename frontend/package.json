@@ -1,6 +1,6 @@
 {
     "name": "nexium-frontend",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Frontend for the Nexium mail service",
     "author": "Dany Sluijk <hello@dany.dev> (https://dany.dev/)",
     "private": true,
