@@ -8,11 +8,7 @@ import { thunks } from "./thunks";
  */
 export interface State {
     loggedIn: boolean;
-    refreshIntervalID?: number;
-    tokens?: {
-        access: string;
-        refresh: string;
-    };
+    token?: string;
     user?: {
         id: string;
         fullName: string;
@@ -32,15 +28,8 @@ export const sessionSlice = createSlice({
 });
 
 // Export all actions from the slice.
-export const { setUser, setToken, logoutUser, setIntervalID } =
-    sessionSlice.actions;
+export const { setUser, setToken, logoutUser } = sessionSlice.actions;
 // Re-export the thunks.
-export const {
-    registerPassword,
-    loginPassword,
-    refreshAccessToken,
-    enableSessionRefresh,
-    disableSessionRefresh,
-} = thunks;
+export const { registerPassword, loginPassword, getUser } = thunks;
 // Export the reducer.
 export default sessionSlice.reducer;

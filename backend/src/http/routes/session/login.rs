@@ -35,13 +35,10 @@ pub async fn route(
     // Now create the session associated with the account.
     let session = session::Session::create(&mut conn, &account, &addr).await?;
     let key = &EncodingKey::from_secret(env.jwt_secret.as_bytes());
-    let refresh = session::refresh::RefreshToken::encode(session, key)?;
+    let token = session::jwt::JwtToken::encode(&session, key)?;
 
     // Commit the changes to the database.
     conn.commit().await.map_err(RouteError::DatabaseError)?;
-
-    // Create a new access token with the new refresh token.
-    let access = session::access::AccessToken::encode(&refresh, key)?;
 
     info!(
         "New successful login for {} ({}).",
@@ -49,8 +46,7 @@ pub async fn route(
     );
 
     Ok(Json(Response {
-        refresh_token: refresh.jwt,
-        access_token: access.jwt,
+        token: token.jwt,
         account,
     }))
 }
@@ -76,8 +72,7 @@ enum AuthType {
 #[serde(rename_all = "camelCase")]
 pub struct Response {
     account: account::Account,
-    refresh_token: String,
-    access_token: String,
+    token: String,
 }
 
 /// All possible error responses for this route.

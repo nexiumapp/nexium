@@ -63,7 +63,7 @@ pub async fn route(
 ```
 
 If the two called functions will either return `RouteError` or `RouteError`, then the responder will automatically convert the error to valid JSON.
-For example, when the pool fails to aquire an connection, the response will be something like:
+For example, when the pool fails to acquire an connection, the response will be something like:
 
 ```json
 {

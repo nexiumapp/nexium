@@ -7,7 +7,7 @@ import { Button, TextInput } from "/src/components/forms";
 import { Divider } from "/src/components/layout";
 import { Icon } from "/src/components/media";
 import { ApiError } from "/src/api";
-import { CreateError } from "/src/api/account";
+import { CreateError } from "/src/api/account/create";
 import { Account } from "/src/models";
 import { useAppDispatch } from "/src/store";
 import { registerPassword } from "/src/store/session";

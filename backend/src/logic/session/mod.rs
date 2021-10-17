@@ -9,8 +9,7 @@ use uuid::Uuid;
 
 use crate::{database, logic::account::Account};
 
-pub mod access;
-pub mod refresh;
+pub mod jwt;
 
 /// This represents an session linked to an account.
 #[derive(Debug, Serialize)]

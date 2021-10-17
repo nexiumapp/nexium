@@ -8,6 +8,7 @@ import { ApiError, post } from "../";
 
 /**
  * Log in an existing account.
+ * @param dispatch The Redux dispatch function.
  * @param username the username of the login to login to.
  * @param auth authentication method to attach to the account.
  */
@@ -19,7 +20,6 @@ export const login = async (
     return await post<LoginResponse, LoginError>(
         dispatch,
         "/api/session/login",
-        "",
         {
             username,
             auth,
@@ -32,8 +32,7 @@ export const login = async (
  */
 export interface LoginResponse {
     account: Account;
-    refreshToken: string;
-    accessToken: string;
+    token: string;
 }
 
 /**

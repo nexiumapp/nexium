@@ -8,16 +8,16 @@ use thiserror::Error;
 
 use crate::{environment::Environment, logic::session};
 
-/// Rocket guard to make sure the request has an valid access token.
-pub struct AccessTokenGuard(session::access::AccessToken);
+/// Rocket guard to make sure the request has an valid session token.
+pub struct UncheckedSessionGuard(session::jwt::JwtToken);
 
 #[async_trait]
-impl<'r> FromRequest<'r> for AccessTokenGuard {
-    type Error = AccessTokenGuardError;
+impl<'r> FromRequest<'r> for UncheckedSessionGuard {
+    type Error = UncheckedSessionGuardError;
 
-    /// Provides the guard which can then be used to secure the access token routes.
+    /// Provides the guard which can then be used to secure the session token routes.
     async fn from_request(req: &'r Request<'_>) -> Outcome<Self, Self::Error> {
-        // Get the env variables from Rocket.
+        // Get the env variable from Rocket.
         let env = req.rocket().state::<Environment>().unwrap();
 
         // Get the authorization header, or error if it does not exist.
@@ -26,7 +26,7 @@ impl<'r> FromRequest<'r> for AccessTokenGuard {
             None => {
                 return Outcome::Failure((
                     Status::Unauthorized,
-                    AccessTokenGuardError::NoTokenProvided,
+                    UncheckedSessionGuardError::NoTokenProvided,
                 ))
             }
         };
@@ -34,7 +34,10 @@ impl<'r> FromRequest<'r> for AccessTokenGuard {
         // Split and check if the auth header type is "Bearer".
         let mut split_auth = auth_header.split_whitespace();
         if split_auth.next() != Some("Bearer") {
-            return Outcome::Failure((Status::Unauthorized, AccessTokenGuardError::InvalidToken));
+            return Outcome::Failure((
+                Status::Unauthorized,
+                UncheckedSessionGuardError::InvalidToken,
+            ));
         }
 
         // Get the token from the second word.
@@ -43,39 +46,39 @@ impl<'r> FromRequest<'r> for AccessTokenGuard {
             None => {
                 return Outcome::Failure((
                     Status::Unauthorized,
-                    AccessTokenGuardError::InvalidToken,
+                    UncheckedSessionGuardError::InvalidToken,
                 ))
             }
         };
 
-        // Decode the refresh token, checking if it's valid in the meantime.
+        // Decode the session token unchecked.
         let key = DecodingKey::from_secret(env.jwt_secret.as_bytes());
-        let token = match session::access::AccessToken::decode(jwt, &key) {
+        let token = match session::jwt::JwtToken::decode_unchecked(jwt, &key) {
             Ok(token) => token,
             Err(_) => {
                 return Outcome::Failure((
                     Status::Unauthorized,
-                    AccessTokenGuardError::InvalidToken,
+                    UncheckedSessionGuardError::InvalidToken,
                 ));
             }
         };
 
-        Outcome::Success(AccessTokenGuard(token))
+        Outcome::Success(Self(token))
     }
 }
 
-impl From<AccessTokenGuard> for session::access::AccessToken {
-    /// Provides easy and clean access to the wrapper access token.
-    fn from(guard: AccessTokenGuard) -> session::access::AccessToken {
+impl From<UncheckedSessionGuard> for session::jwt::JwtToken {
+    /// Provides easy and clean session to the wrapper session token.
+    fn from(guard: UncheckedSessionGuard) -> session::jwt::JwtToken {
         guard.0
     }
 }
 
-/// Errors which can arrise from the access guard.
+/// Errors which can arrise from the session guard.
 #[derive(Debug, Error)]
-pub enum AccessTokenGuardError {
-    #[error("No access token is provided.")]
+pub enum UncheckedSessionGuardError {
+    #[error("No session token is provided.")]
     NoTokenProvided,
-    #[error("The access token provided was invalid.")]
+    #[error("The session token provided was invalid.")]
     InvalidToken,
 }

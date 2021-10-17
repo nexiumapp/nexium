@@ -2,13 +2,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { Err, Ok, ok, Result } from "neverthrow";
 
 import { ApiError } from "/src/api";
-import { create, CreateError, CreateResponse } from "/src/api/account";
-import { login, LoginError, LoginResponse } from "/src/api/session";
-import { refresh } from "/src/api/session";
+import { login, LoginError, LoginResponse } from "/src/api/session/login";
+import { create, CreateError, CreateResponse } from "/src/api/account/create";
+import { whoami, WhoamiError, WhoamiResponse } from "/src/api/account/whoami";
 import { Account, PasswordAuth } from "/src/models";
 
 import { ThunkOptions } from "../";
-import { setUser, setToken, logoutUser, setIntervalID } from "./";
+import { setUser, setToken } from "./";
 
 /**
  * Register using password authentication.
@@ -40,12 +40,7 @@ const registerPassword = createAsyncThunk<
         const data = result as Ok<CreateResponse, ApiError<CreateError>>;
 
         // Dispatch an authentication update to the store.
-        dispatch(
-            setToken({
-                access: data.value.accessToken,
-                refresh: data.value.refreshToken,
-            }),
-        );
+        dispatch(setToken(data.value.token));
 
         // Dispatch an user update to the store.
         dispatch(
@@ -55,9 +50,6 @@ const registerPassword = createAsyncThunk<
                 username: data.value.account.username,
             }),
         );
-
-        // Enable session refreshing.
-        dispatch(enableSessionRefresh());
 
         return ok(data.value.account);
     },
@@ -101,12 +93,7 @@ const loginPassword = createAsyncThunk<
         const data = result as Ok<LoginResponse, ApiError<LoginError>>;
 
         // Dispatch an authentication update to the store.
-        dispatch(
-            setToken({
-                access: data.value.accessToken,
-                refresh: data.value.refreshToken,
-            }),
-        );
+        dispatch(setToken(data.value.token));
 
         // Dispatch an user update to the store.
         dispatch(
@@ -116,9 +103,6 @@ const loginPassword = createAsyncThunk<
                 username: data.value.account.username,
             }),
         );
-
-        // Enable session refreshing.
-        dispatch(enableSessionRefresh());
 
         return ok(data.value.account);
     },
@@ -133,80 +117,33 @@ interface LoginPasswordAction {
 }
 
 /**
- * Refresh the access token.
+ * Get the currently logged in user.
  */
-const refreshAccessToken = createAsyncThunk<void, undefined, ThunkOptions>(
-    "session/refreshAccessToken",
-    async (_, { dispatch, getState }) => {
-        const state = getState();
+const getUser = createAsyncThunk<
+    Result<Account, ApiError<WhoamiError>>,
+    undefined,
+    ThunkOptions
+>(
+    "session/getUser",
+    async (
+        _,
+        { dispatch },
+    ): Promise<Result<Account, ApiError<WhoamiError>>> => {
+        // Get the user from the API.
+        const result = await whoami(dispatch);
 
-        // Sanity check if the tokens are set.
-        if (!state.session.tokens) {
-            dispatch(disableSessionRefresh());
-            dispatch(logoutUser());
-            return;
+        // Return the error if an error occured.
+        if (result.isErr()) {
+            return result as Err<any, ApiError<WhoamiError>>;
         }
 
-        // Send the refresh request.
-        const res = await refresh(dispatch, state.session.tokens.refresh);
+        // Assign the correct type.
+        const data = result as Ok<WhoamiResponse, ApiError<WhoamiError>>;
 
-        // Check if the request succeeded.
-        if (res.isErr()) {
-            // Ignore the error if the refresh token is not invalid but did return an error.
-            if (!(res.error.code === "accessdenied")) {
-                return;
-            }
+        // Dispatch an user update.
+        dispatch(setUser(data.value.account));
 
-            // If the access is denied, log the user out.
-            dispatch(disableSessionRefresh());
-            dispatch(logoutUser());
-            return;
-        }
-
-        // Set the new access token.
-        dispatch(
-            setToken({
-                access: res.value.accessToken,
-                refresh: getState().session.tokens.refresh,
-            }),
-        );
-    },
-);
-
-/**
- * Enable session refreshing.
- */
-const enableSessionRefresh = createAsyncThunk<void, undefined, ThunkOptions>(
-    "session/enableSessionRefresh",
-    (_, { dispatch }) => {
-        // Create the interval.
-        const id = window.setInterval(
-            () => dispatch(refreshAccessToken()),
-            12 * 60 * 1000,
-        );
-        dispatch(setIntervalID({ id }));
-
-        // Run the refresh immidiately.
-        dispatch(refreshAccessToken());
-    },
-);
-
-/**
- * Disable the refreshing of the access token.
- */
-const disableSessionRefresh = createAsyncThunk<void, undefined, ThunkOptions>(
-    "session/disableSessionRefresh",
-    (_, { dispatch, getState }) => {
-        const state = getState();
-
-        // Ignore the call when the interval ID is not set.
-        if (!state.session.refreshIntervalID) {
-            return;
-        }
-
-        // Clear the interval.
-        window.clearInterval(state.session.refreshIntervalID);
-        dispatch(setIntervalID({ id: undefined }));
+        return ok(data.value.account);
     },
 );
 
@@ -216,7 +153,5 @@ const disableSessionRefresh = createAsyncThunk<void, undefined, ThunkOptions>(
 export const thunks = {
     registerPassword,
     loginPassword,
-    refreshAccessToken,
-    enableSessionRefresh,
-    disableSessionRefresh,
+    getUser,
 };

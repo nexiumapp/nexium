@@ -3,41 +3,41 @@ use jsonwebtoken::EncodingKey;
 use rocket::http::Status;
 use rocket::serde::{json::Json, Serialize};
 use rocket::State;
+use sqlx::{Pool, Postgres};
 use thiserror::Error;
 
 use crate::environment::Environment;
-use crate::http::guards::{RefreshTokenGuard, RefreshTokenGuardError};
-use crate::logic::session;
-use crate::logic::session::refresh::RefreshToken;
+use crate::http::guards::{UncheckedSessionGuard, UncheckedSessionGuardError};
+use crate::logic::session::jwt::{JwtToken, RenewError};
 
 /// Route to create a new account.
 #[post("/refresh")]
 pub async fn route(
-    refresh_token: Result<RefreshTokenGuard, RefreshTokenGuardError>,
+    session: Result<UncheckedSessionGuard, UncheckedSessionGuardError>,
+    pool: &State<Pool<Postgres>>,
     env: &State<Environment>,
 ) -> Result<Json<Response>, RouteError> {
-    // Unwrap the refresh token to error out when the token is invalid.
-    let refresh_token: RefreshToken = refresh_token?.into();
+    // Unwrap the session to error out when the token is invalid.
+    let session: JwtToken = session?.into();
 
-    // Encode the refresh token into a new access token.
+    // Renew the session, generate a new JWT.
     let key = EncodingKey::from_secret(env.jwt_secret.as_bytes());
-    let access = session::access::AccessToken::encode(&refresh_token, &key)?;
+    let mut conn = pool.acquire().await?;
+    let renewed = session.renew(&mut conn, &key).await?;
 
     debug!(
-        "Session {} ({}) refreshed.",
-        access.claims.session, access.claims.account
+        "Session {} ({}) renewed.",
+        renewed.claims.session, renewed.claims.account
     );
 
-    Ok(Json(Response {
-        access_token: access.jwt,
-    }))
+    Ok(Json(Response { token: renewed.jwt }))
 }
 
 /// Success response of this route.
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Response {
-    access_token: String,
+    token: String,
 }
 
 /// All possible error responses for this route.
@@ -73,14 +73,23 @@ impl From<RouteError> for Status {
     }
 }
 
-impl From<RefreshTokenGuardError> for RouteError {
-    // Translate an refresh token error to an route error.
-    fn from(err: RefreshTokenGuardError) -> Self {
+impl From<UncheckedSessionGuardError> for RouteError {
+    // Translate an session token error to an route error.
+    fn from(err: UncheckedSessionGuardError) -> Self {
         match err {
-            RefreshTokenGuardError::NoTokenProvided => RouteError::AccessDenied,
-            RefreshTokenGuardError::InvalidToken => RouteError::AccessDenied,
-            RefreshTokenGuardError::InternalError => RouteError::InternalError,
-            RefreshTokenGuardError::DatabaseError(e) => RouteError::DatabaseError(e),
+            UncheckedSessionGuardError::InvalidToken => RouteError::AccessDenied,
+            UncheckedSessionGuardError::NoTokenProvided => RouteError::AccessDenied,
+        }
+    }
+}
+
+impl From<RenewError> for RouteError {
+    // Translate a renew error to an route error.
+    fn from(err: RenewError) -> Self {
+        match err {
+            RenewError::SessionUnknown => RouteError::AccessDenied,
+            RenewError::TokenError(_) => RouteError::InternalError,
+            RenewError::DatabaseError(e) => RouteError::DatabaseError(e),
         }
     }
 }
