@@ -50,7 +50,7 @@ impl JwtToken {
         session.update_seen(conn).await?;
 
         // Encode the token.
-        JwtToken::encode(&session, key).map_err(|e| RenewError::TokenError(e))
+        JwtToken::encode(&session, key).map_err(RenewError::TokenError)
     }
 
     /// Encode a session to an JWT token.
