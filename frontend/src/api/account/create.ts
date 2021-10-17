@@ -8,6 +8,7 @@ import { ApiError, post } from "../";
 
 /**
  * Create a new account.
+ * @param dispatch The Redux dispatch function.
  * @param username the username to set.
  * @param auth authentication method to attach to the account.
  */
@@ -19,7 +20,6 @@ export const create = async (
     return await post<CreateResponse, CreateError>(
         dispatch,
         "/api/account/new",
-        "",
         {
             username,
             auth,
@@ -32,8 +32,7 @@ export const create = async (
  */
 export interface CreateResponse {
     account: Account;
-    refreshToken: string;
-    accessToken: string;
+    token: string;
 }
 
 /**

@@ -30,7 +30,7 @@ interface SetUserAction {
  * @param action The action including the tokens.
  */
 const setToken: CaseReducer<State, SetTokenAction> = (state, { payload }) => {
-    state.tokens = payload;
+    state.token = payload;
 };
 
 /**
@@ -38,10 +38,7 @@ const setToken: CaseReducer<State, SetTokenAction> = (state, { payload }) => {
  */
 interface SetTokenAction {
     type: "session/setToken";
-    payload: {
-        access: string;
-        refresh: string;
-    };
+    payload: string;
 }
 
 /**
@@ -50,30 +47,9 @@ interface SetTokenAction {
  */
 const logoutUser: CaseReducer<State> = (state) => {
     state.loggedIn = false;
-    state.tokens = undefined;
+    state.token = undefined;
     state.user = undefined;
 };
-
-/**
- * Remove the user session.
- * @param state The current state of the slice.
- */
-const setIntervalID: CaseReducer<State, SetIntervalIDAction> = (
-    state,
-    { payload },
-) => {
-    state.refreshIntervalID = payload.id;
-};
-
-/**
- * Action for the `setIntervalID` reducer.
- */
-interface SetIntervalIDAction {
-    type: "session/setIntervalID";
-    payload: {
-        id?: number;
-    };
-}
 
 /**
  * Combined reducer object.
@@ -82,5 +58,4 @@ export const reducers = {
     setUser,
     setToken,
     logoutUser,
-    setIntervalID,
 };

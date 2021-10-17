@@ -1,5 +1,5 @@
 use crate::{
-    http::guards::{AccessTokenGuard, AccessTokenGuardError},
+    http::guards::{SessionTokenGuard, SessionTokenGuardError},
     logic,
 };
 use jsonresponder::JsonResponder;
@@ -11,14 +11,15 @@ use thiserror::Error;
 /// Route to create a new account.
 #[get("/whoami")]
 pub async fn route(
-    access: Result<AccessTokenGuard, AccessTokenGuardError>,
+    session: Result<SessionTokenGuard, SessionTokenGuardError>,
     pool: &State<Pool<Postgres>>,
 ) -> Result<Json<Response>, RouteError> {
-    // Error out if the access token was invalid.
-    let access_token: logic::session::access::AccessToken = access?.into();
+    // Error out if the session token was invalid.
+    let token: logic::session::jwt::JwtToken = session?.into();
 
+    // Acquire an connection, not an transaction as it's just read only.
     let mut conn = pool.acquire().await?;
-    let account = logic::account::Account::find(&mut conn, &access_token.claims.account).await?;
+    let account = logic::account::Account::find(&mut conn, &token.claims.account).await?;
 
     Ok(Json(Response { account }))
 }
@@ -58,9 +59,9 @@ impl From<RouteError> for Status {
     }
 }
 
-impl From<AccessTokenGuardError> for RouteError {
-    /// Convert an access token error to an access denied.
-    fn from(_: AccessTokenGuardError) -> Self {
+impl From<SessionTokenGuardError> for RouteError {
+    /// Convert an session token error to an access denied.
+    fn from(_: SessionTokenGuardError) -> Self {
         RouteError::AccessDenied
     }
 }
