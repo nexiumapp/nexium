@@ -1,0 +1,36 @@
+@import "../../../mixins";
+
+.topbar {
+    display: flex;
+    position: fixed;
+    width: 100%;
+    height: 3.2em;
+    z-index: 100;
+    background: var(--background-primary);
+    box-shadow: 0 1px 4px var(--background-shadow);
+}
+
+.sidebartoggle {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+}
+
+.greeting {
+    display: none;
+    max-width: 60vw;
+    padding: 0 8px;
+    overflow: hidden;
+    white-space: nowrap;
+    align-self: center;
+}
+
+@include breakpoint(sm) {
+    .sidebartoggle {
+        display: none;
+    }
+
+    .greeting {
+        display: flex;
+    }
+}

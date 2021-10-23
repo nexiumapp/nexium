@@ -14,7 +14,7 @@
         "react-dom": "preact/compat"
     },
     "scripts": {
-        "start": "parcel --host 0.0.0.0 -p 8001 --no-hmr ./src/index.html",
+        "start": "parcel -p 8001 ./src/index.html",
         "build": "yarn clear-cache && parcel build ./src/index.html",
         "serve": "yarn build && http-server ./dist -p 8001 -g -b --proxy http://localhost:8000?",
         "analyse": "yarn clear-cache && PARCEL_BUNDLE_ANALYZER=true parcel build src/index.html --reporter @parcel/reporter-bundle-analyzer",

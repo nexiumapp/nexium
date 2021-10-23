@@ -7,7 +7,7 @@ import { Button, TextInput } from "/src/components/forms";
 import { Icon } from "/src/components/media";
 import { Divider } from "/src/components/layout";
 import { ApiError } from "/src/api";
-import { LoginError } from "/src/api/session";
+import { LoginError } from "/src/api/session/login";
 import { useAppDispatch } from "/src/store";
 import { loginPassword } from "/src/store/session";
 import { Account } from "/src/models";
@@ -23,7 +23,7 @@ export const Login: FunctionalComponent = () => {
     const dispatch = useAppDispatch();
     const [error, setError] = useState("");
     const fields = {
-        username: useInput(true, (value) => {
+        username: useInput(true, "", (value) => {
             if (value.length < 3) {
                 return "Username is too short.";
             }
@@ -38,7 +38,7 @@ export const Login: FunctionalComponent = () => {
 
             return true;
         }),
-        password: useInput(true, (value) => {
+        password: useInput(true, "", (value) => {
             if (value.length < 3) {
                 return "Password is too short.";
             }

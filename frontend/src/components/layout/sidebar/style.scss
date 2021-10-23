@@ -1,0 +1,71 @@
+@import "../../../mixins";
+
+.sidebar {
+    background: var(--background-primary);
+    display: none;
+    position: fixed;
+    top: 3.2em;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1em 12px;
+    font-size: 0.9em;
+    letter-spacing: 1px;
+}
+
+.open {
+    display: block;
+}
+
+@include breakpoint(sm) {
+    .sidebar {
+        display: block;
+        position: static;
+    }
+}
+
+.link {
+    display: flex;
+    padding: 6px 8px;
+    margin: 4px 0;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-regular);
+
+    svg {
+        width: 20px;
+        margin-right: 10px;
+    }
+
+    .badge {
+        font-weight: normal;
+        margin-left: auto;
+    }
+
+    &.header {
+        font-weight: bold;
+        padding: 8px;
+    }
+
+    &.sub {
+        opacity: 0.7;
+        font-style: oblique;
+        padding: 4px 8px;
+    }
+
+    &:hover {
+        background: var(--highlight-primary);
+        color: var(--highlight-text);
+    }
+}
+
+.activelink {
+    background: var(--highlight-secondary);
+    color: var(--highlight-text);
+}
+
+.divider {
+    border: 0;
+    border-bottom: 1px solid var(--background-secondary);
+    margin: 8px 0;
+}

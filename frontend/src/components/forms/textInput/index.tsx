@@ -39,7 +39,7 @@ interface Props {
     // ID of the input.
     id: string;
     // `useInput` hook to provide from the component. This controls the component.
-    hook: InputHook;
+    hook: InputHook<string>;
     // Title of the input to show as an label.
     title: string;
     // Placeholder to show inside the textbox.
