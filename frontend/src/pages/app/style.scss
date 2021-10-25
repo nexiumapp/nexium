@@ -1,0 +1,40 @@
+@import "../../mixins";
+
+.container {
+    display: grid;
+    height: 100vh;
+    grid-template:
+        "top" 3.2em
+        "main";
+
+    header {
+        grid-area: top;
+    }
+
+    nav {
+        grid-area: side;
+    }
+
+    main {
+        grid-area: main;
+        padding: 2vh 2vw;
+    }
+}
+
+@include breakpoint(sm) {
+    .container {
+        grid-template:
+            "top top" 3.2em
+            "side main"
+            / 36vw 1fr;
+    }
+}
+
+@include breakpoint(lg) {
+    .container {
+        grid-template:
+            "top top" 3.2em
+            "side main"
+            / 20vw 1fr;
+    }
+}

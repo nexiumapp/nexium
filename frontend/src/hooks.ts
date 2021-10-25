@@ -31,16 +31,19 @@ export const useLocalStorage = <T = any>(
  * @param validate Validation function.
  * @returns An array to interact with the input.
  */
-export const useInput = (
+export const useInput = <T = string>(
     required: boolean,
-    validate: (input: string) => string | boolean,
-): InputHook => {
-    const [input, setInput] = useState<string>("");
-    const [valid, setValid] = useState<boolean>(!(required || !validate("")));
+    initial: T,
+    validate: (input: T) => string | boolean,
+): InputHook<T> => {
+    const [input, setInput] = useState<T>(initial);
+    const [valid, setValid] = useState<boolean>(
+        !(required || !validate(initial)),
+    );
     const [error, setError] = useState<string>("");
 
     // Callback to call when the input is changed.
-    const inputCallback = (input: string) => {
+    const inputCallback = (input: T) => {
         const result = validate(input);
         setInput(input);
 
@@ -66,10 +69,10 @@ export const useInput = (
  * 4: Function to call when setting an custom error.
  * 5: Function to call when the input is blurred.
  */
-export type InputHook = [
-    string,
+export type InputHook<T> = [
+    T,
     string | false,
     boolean,
-    (input: string) => void,
+    (input: T) => void,
     (error: string) => void,
 ];

@@ -24,7 +24,7 @@ export const Register: FunctionalComponent = () => {
     const dispatch = useAppDispatch();
     const [error, setError] = useState("");
     const fields = {
-        username: useInput(true, (value) => {
+        username: useInput(true, "", (value) => {
             if (value.length < 3) {
                 return "Username is too short.";
             }
@@ -39,7 +39,7 @@ export const Register: FunctionalComponent = () => {
 
             return true;
         }),
-        password: useInput(true, (value) => {
+        password: useInput(true, "", (value) => {
             if (value.length < 3) {
                 return "Password is too short.";
             }
@@ -50,7 +50,7 @@ export const Register: FunctionalComponent = () => {
 
             return true;
         }),
-        passwordConfirm: useInput(true, (value) => {
+        passwordConfirm: useInput(true, "", (value) => {
             if (fields.password[0] !== value) {
                 return "Passwords do not match.";
             }

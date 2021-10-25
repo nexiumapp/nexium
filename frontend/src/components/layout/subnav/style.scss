@@ -1,0 +1,40 @@
+@import "../../../mixins";
+
+.selectnav {
+    display: block;
+    width: 100%;
+    padding: 0.8em;
+    margin: 8px 0;
+    background: var(--background-primary);
+    border: 1px solid var(--background-shadow);
+    border-radius: 6px;
+}
+
+.subnav {
+    display: none;
+
+    * {
+        display: block;
+        text-decoration: none;
+        padding: 0.1em 0;
+        margin: 0.4em 2em 1.2em 0;
+        border-bottom: 2px solid #fff0;
+        color: var(--text-regular);
+        font-style: oblique;
+
+        &.link,
+        &:hover {
+            border-bottom-color: var(--text-regular);
+        }
+    }
+}
+
+@include breakpoint(md) {
+    .selectnav {
+        display: none;
+    }
+
+    .subnav {
+        display: flex;
+    }
+}

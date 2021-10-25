@@ -1,0 +1,20 @@
+@import "../../../mixins";
+
+.select {
+    display: block;
+    padding: 0.4em;
+    min-width: 100%;
+    background: var(--background-primary);
+    border: 1px solid var(--background-shadow);
+    border-radius: 4px;
+}
+
+@include breakpoint(md) {
+    .select {
+        min-width: 30vw;
+    }
+}
+
+.error {
+    border: 1px solid var(--text-error);
+}

@@ -28,14 +28,14 @@ const start = (): void => {
                 <ThemeProvider>
                     <Router>
                         <AsyncRoute
-                            path="/app"
+                            path="/app/:rest*"
                             getComponent={() =>
                                 import("/src/pages/app").then((f) => f["App"])
                             }
                         />
                         <AsyncRoute
                             default
-                            path="/auth"
+                            path="/auth/:rest*"
                             getComponent={() =>
                                 import("/src/pages/authenticate").then(
                                     (f) => f["Auth"],

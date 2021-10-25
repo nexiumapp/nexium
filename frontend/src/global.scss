@@ -1,6 +1,7 @@
 html,
 body {
     margin: 0;
+    color: var(--text-regular);
 }
 
 body {
@@ -8,6 +9,7 @@ body {
     font-family: sans-serif;
     line-height: 1.2;
     box-sizing: border-box;
+    font-size: 1.1em;
 }
 
 h1,
@@ -15,7 +17,8 @@ h2,
 h3,
 h4,
 h5 {
-    margin: 4px 0 0;
+    margin: 0;
+    margin-bottom: 4px;
     color: var(--text-header);
 }
 
@@ -28,6 +31,10 @@ h5 {
 h4,
 h5 {
     color: var(--text-subscript);
+}
+
+p {
+    margin: 8px 0;
 }
 
 a {
