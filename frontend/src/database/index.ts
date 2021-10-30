@@ -13,7 +13,7 @@ export class Database {
     /**
      * Settings database object.
      */
-    public settings: Settings;
+    public readonly settings: Settings;
 
     /**
      * Get the instance of the database class.
@@ -32,7 +32,10 @@ export class Database {
     /**
      * Prevent new constructions of this class, requiring you to use the `.get()` function.
      */
-    private constructor() {}
+    private constructor() {
+        // Create all table classes.
+        this.settings = new Settings();
+    }
 
     /**
      * Open a connection with IndexedDB, and create the subclass instances.
@@ -48,7 +51,11 @@ export class Database {
             },
         });
 
-        this.settings = new Settings(database);
+        // Insert the databse instance into the tables.
+        this.settings.setDB(database);
+
+        // Sync all tables.
+        await Promise.all([this.settings.sync()]);
 
         return Database.instance;
     }

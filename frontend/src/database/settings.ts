@@ -1,24 +1,15 @@
-import { IDBPDatabase } from "idb";
-
-import { Datamodel } from "./";
+import { DBTable } from "./table";
 
 /**
  * Settings database subclass.
  * This handles any interaction with the settings table.
  */
-export class Settings {
+export class Settings extends DBTable {
     /**
-     * The database connection to use.
+     * Sync the current settings to the server.
      */
-    private database: IDBPDatabase<Datamodel>;
-
-    /**
-     * Create a new instance of the database.
-     * This should only be called by Database class.
-     * @param db The IndexedDB database connection.
-     */
-    public constructor(db: IDBPDatabase<Datamodel>) {
-        this.database = db;
+    public async sync(): Promise<void> {
+        // Todo: add settings sync logic.
     }
 
     /**
