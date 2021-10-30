@@ -41,6 +41,7 @@
     "dependencies": {
         "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@reduxjs/toolkit": "^1.6.1",
+        "idb": "^6.1.5",
         "neverthrow": "^4.2.2",
         "preact": "^10.5.14",
         "preact-async-route": "^2.2.1",

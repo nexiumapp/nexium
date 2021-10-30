@@ -24,10 +24,10 @@ export const Settings: FunctionalComponent = () => (
         />
 
         <Router>
-            <div default path="/app/settings">
+            <Fragment default path="/app/settings">
                 <General />
-            </div>
-            <div path="/app/settings/domains">Domains</div>
+            </Fragment>
+            <Fragment path="/app/settings/domains">Domains</Fragment>
         </Router>
     </Fragment>
 );

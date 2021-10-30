@@ -14,6 +14,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import AsyncRoute from "preact-async-route";
 
 import { ThemeProvider } from "/src/components/theme";
+import { Database } from "/src/database";
 import { store, persistor } from "/src/store";
 
 import "./global.scss";
@@ -22,6 +23,9 @@ import "./global.scss";
  * Start the application.
  */
 const start = (): void => {
+    // Open the IndexedDB connection.
+    Database.get();
+
     render(
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
