@@ -13,7 +13,7 @@ mod smtp;
 #[actix_web::main]
 async fn main() {
     // Set the log level to info by default.
-    if let None = env::var_os("RUST_LOG") {
+    if env::var_os("RUST_LOG").is_none() {
         env::set_var("RUST_LOG", "info,actix_web=error,sqlx=error");
     }
 

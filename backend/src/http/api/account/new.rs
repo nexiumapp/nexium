@@ -22,7 +22,7 @@ async fn new_account(
     pool: web::Data<Pool<Postgres>>,
 ) -> Result<Json<Response>, RouteError> {
     // Check that the current session is not logged in.
-    if let Some(_) = user {
+    if user.is_some() {
         return Err(RouteError::LoggedIn);
     }
 

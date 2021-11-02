@@ -22,7 +22,7 @@ async fn login(
     pool: web::Data<Pool<Postgres>>,
 ) -> Result<Json<Response>, RouteError> {
     // Check that the current session is not logged in.
-    if let Some(_) = user {
+    if user.is_some() {
         return Err(RouteError::LoggedIn);
     }
 
@@ -36,7 +36,7 @@ async fn login(
     // Run the authentication for this type.
     match &data.auth {
         AuthType::Password { password } => {
-            auth::password::AuthPassword::authenticate(&mut conn, &account, password).await?
+            auth::password::AuthPassword::authenticate(&mut conn, &account, password).await?;
         }
     };
 

@@ -25,12 +25,12 @@ impl AuthPassword {
         password: &str,
     ) -> Result<Self, CreateError> {
         // First validate the password complexity.
-        if !Self::validate(password.to_string(), &[account.username.as_str()]) {
+        if !Self::validate(password, &[account.username.as_str()]) {
             return Err(CreateError::PasswordComplexity);
         }
 
         // Hash the password for storage.
-        let hash = Self::hash(password.to_string()).map_err(|_| CreateError::HashError)?;
+        let hash = Self::hash(password).map_err(|_| CreateError::HashError)?;
 
         // Save the password to the database.
         let auth = database::auth_password::create(conn, account.id, hash).await?;
@@ -48,15 +48,15 @@ impl AuthPassword {
         let pw = database::auth_password::get(conn, account.id)
             .await?
             .ok_or(AuthenticateError::NoPasswordAuth)?;
-        AuthPassword::compare(pw.hash, plaintext)?;
+        AuthPassword::compare(&pw.hash, plaintext)?;
 
         Ok(())
     }
 
     /// Compare an hashed password with an plaintext.
     /// Only returns Ok when the password is valid, error otherwise.
-    fn compare(hash: String, plaintext: &str) -> Result<(), password_hash::Error> {
-        let parsed = PasswordHash::new(&hash)?;
+    fn compare(hash: &str, plaintext: &str) -> Result<(), password_hash::Error> {
+        let parsed = PasswordHash::new(hash)?;
         let context = Self::create_context();
 
         context.verify_password(plaintext.as_bytes(), &parsed)
@@ -64,12 +64,12 @@ impl AuthPassword {
 
     /// Validate the complexity of the password.
     /// This uses the Zxcvbn library to check, and limits the length to 200 characters.
-    fn validate(plaintext: String, user_inputs: &[&str]) -> bool {
+    fn validate(plaintext: &str, user_inputs: &[&str]) -> bool {
         if plaintext.len() > 200 {
             return false;
         }
 
-        let complexity = zxcvbn(plaintext.as_str(), user_inputs);
+        let complexity = zxcvbn(plaintext, user_inputs);
         if complexity.is_err() {
             return false;
         }
@@ -78,7 +78,7 @@ impl AuthPassword {
     }
 
     /// Hash an plaintext to an format suitable for storage.
-    fn hash(plaintext: String) -> Result<String, password_hash::Error> {
+    fn hash(plaintext: &str) -> Result<String, password_hash::Error> {
         let salt = SaltString::generate(&mut OsRng);
         let context = Self::create_context();
 

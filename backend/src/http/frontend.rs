@@ -34,6 +34,6 @@ pub fn index() -> HttpResponse {
 }
 
 /// Serve the static frontend files, like CSS and JS.
-pub fn dist(path: web::Path<String>) -> HttpResponse {
-    handle(&path.as_str())
+pub fn dist(path: &web::Path<String>) -> HttpResponse {
+    handle(path.as_str())
 }

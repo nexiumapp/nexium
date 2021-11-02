@@ -12,7 +12,7 @@ pub async fn start(db: Pool<Postgres>) {
         Arc::new(SmtpHandler { _db: db }),
     );
 
-    service.listen().await
+    service.listen().await;
 }
 
 struct SmtpHandler {

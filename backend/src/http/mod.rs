@@ -26,7 +26,7 @@ pub async fn start(conn: Pool<Postgres>, env: Environment) -> std::io::Result<()
             .app_data(Data::new(conn.clone()))
             .app_data(Data::new(env.clone()))
             .wrap(
-                RedisSession::new(env.redis_url.clone(), &env.secret.as_bytes())
+                RedisSession::new(env.redis_url.clone(), env.secret.as_bytes())
                     .cookie_name("nexium")
                     .ttl(7 * 24 * 60 * 60) // Keep a session active for one week.
                     .cookie_max_age(Some(Duration::days(100 * 365))) // Let the client store the session for a long time, or 100 years, whatever comes first.
@@ -36,7 +36,7 @@ pub async fn start(conn: Pool<Postgres>, env: Environment) -> std::io::Result<()
             .wrap(middleware::Compress::default())
             .wrap(middleware::Logger::default())
             .service(api::routes())
-            .service(web::resource("/{_:.*}").route(web::get().to(frontend::dist)))
+            .service(web::resource("/{_:.*}").route(web::get().to(|p| frontend::dist(&p))))
             .default_service(web::get().to(frontend::index))
     })
     .bind("0.0.0.0:8000")?
