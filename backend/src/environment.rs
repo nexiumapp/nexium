@@ -4,7 +4,7 @@ use std::env;
 /// Get the configuration from the enviroment variables.
 /// Returns a string with an textual error if this wass not possible.
 pub fn get() -> Result<Environment, String> {
-    let jwt_secret = try_get("NEXIUM_JWT_SECRET", None)?;
+    let secret = try_get("NEXIUM_SECRET", None)?;
     let database_url = match try_get("NEXIUM_DATABASE_URL", None) {
         Ok(url) => url,
         Err(_) => try_get(
@@ -12,14 +12,16 @@ pub fn get() -> Result<Environment, String> {
             Some("postgres://postgres:nexium@localhost/nexium".to_string()),
         )?,
     };
+    let redis_url = try_get("NEXIUM_REDIS_URL", Some("127.0.0.1:6379".to_string()))?;
 
-    if jwt_secret.len() < 256 {
-        return Err("The JWT secrets is required to be at least 265 characters long.".to_string());
+    if secret.len() < 256 {
+        return Err("The secret is required to be at least 265 characters long.".to_string());
     }
 
     Ok(Environment {
-        jwt_secret,
+        secret,
         database_url,
+        redis_url,
     })
 }
 
@@ -49,7 +51,9 @@ fn try_get(key: &str, default: Option<String>) -> Result<String, String> {
     }
 }
 
+#[derive(Clone)]
 pub struct Environment {
-    pub jwt_secret: String,
+    pub secret: String,
     pub database_url: String,
+    pub redis_url: String,
 }

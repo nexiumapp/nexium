@@ -47,7 +47,7 @@ impl AuthPassword {
     ) -> Result<(), AuthenticateError> {
         let pw = database::auth_password::get(conn, account.id)
             .await?
-            .ok_or(AuthenticateError::NoPassword)?;
+            .ok_or(AuthenticateError::NoPasswordAuth)?;
         AuthPassword::compare(pw.hash, plaintext)?;
 
         Ok(())
@@ -112,7 +112,7 @@ pub enum CreateError {
 #[derive(Error, Debug)]
 pub enum AuthenticateError {
     #[error("This account does not have password authentication.")]
-    NoPassword,
+    NoPasswordAuth,
     #[error("The given password is incorrect.")]
     IncorrectPassword(#[from] password_hash::Error),
     #[error("An internal database error occured.")]
