@@ -27,6 +27,7 @@ jobs:
           DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
       - name: Validates Sqlx local scheme is up to date.
         run: cargo sqlx prepare --check
+        working-directory: ./backend
         env:
           DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
       - name: Install Clippy
