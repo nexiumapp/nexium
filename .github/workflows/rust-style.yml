@@ -24,17 +24,14 @@ jobs:
       - name: Run Sqlx migrations
         run: sqlx migrate run
         env:
-          DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
-      - name: Validates Sqlx local scheme is up to date.
-        run: cargo sqlx prepare --check
-        working-directory: ./backend
-        env:
+          SQLX_OFFLINE: false
           DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
       - name: Install Clippy
         run: rustup component add clippy
       - name: Run Clippy
         run: cargo clippy --all-targets --all-features -- -D warnings
         env:
+          SQLX_OFFLINE: false
           DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
   fmt:
     runs-on: ubuntu-latest

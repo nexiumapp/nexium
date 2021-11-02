@@ -30,10 +30,12 @@ jobs:
       - name: Run Sqlx migrations
         run: cd backend && sqlx migrate run && cd ..
         env:
+          SQLX_OFFLINE: false
           DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
       - name: Build backend image
         run: docker build ./backend --tag backend
         env:
+          SQLX_OFFLINE: false
           DATABASE_URL: "postgres://postgres:nexium@postgres/nexium"
       - name: Build frontend image
         run: docker build ./frontend --tag frontend
