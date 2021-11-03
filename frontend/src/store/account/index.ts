@@ -4,11 +4,10 @@ import { reducers } from "./reducers";
 import { thunks } from "./thunks";
 
 /**
- * State definition when the user is logged in.
+ * State definition of the account slice.
  */
 export interface State {
     loggedIn: boolean;
-    token?: string;
     user?: {
         id: string;
         fullName: string;
@@ -17,10 +16,10 @@ export interface State {
 }
 
 /**
- * The session slice stores everything related to the current session.
+ * The account slice stores everything related to the current user account.
  */
 export const sessionSlice = createSlice({
-    name: "session",
+    name: "account",
     initialState: {
         loggedIn: false,
     } as State,
@@ -28,8 +27,8 @@ export const sessionSlice = createSlice({
 });
 
 // Export all actions from the slice.
-export const { setUser, setToken, logoutUser } = sessionSlice.actions;
+export const { setUser, clearUser } = sessionSlice.actions;
 // Re-export the thunks.
-export const { registerPassword, loginPassword, getUser } = thunks;
+export const { registerPassword, loginPassword, getUser, logout } = thunks;
 // Export the reducer.
 export default sessionSlice.reducer;

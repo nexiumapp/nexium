@@ -7,10 +7,10 @@ import { Button, TextInput } from "/src/components/forms";
 import { Divider } from "/src/components/layout";
 import { Icon } from "/src/components/media";
 import { ApiError } from "/src/api";
-import { CreateError } from "/src/api/account/create";
+import { CreateError } from "/src/api/account";
 import { Account } from "/src/models";
 import { useAppDispatch } from "/src/store";
-import { registerPassword } from "/src/store/session";
+import { registerPassword } from "/src/store/account";
 import { useInput } from "/src/hooks";
 
 import * as style from "./style.scss";
@@ -85,6 +85,8 @@ export const Register: FunctionalComponent = () => {
                 fields.username[4]("The username is invalid.");
             } else if (error === "passwordcomplexity") {
                 fields.password[4]("This password is not complex enough.");
+            } else if (error === "loggedin") {
+                setError("You are already logged in.");
             } else {
                 setError("An server error occured.");
             }
