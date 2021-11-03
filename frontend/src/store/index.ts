@@ -4,7 +4,7 @@ import { persistReducer, persistStore } from "redux-persist";
 
 import storage from "redux-persist/lib/storage";
 
-import sessionReducer from "./session";
+import sessionReducer from "./account";
 
 // Configuration for persisting the store.
 const persistConfig = {

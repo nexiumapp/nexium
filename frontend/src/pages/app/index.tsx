@@ -25,7 +25,7 @@ import {
     Topbar,
 } from "/src/components/layout";
 import { useAppDispatch, useAppSelector } from "/src/store";
-import { getUser, logoutUser } from "/src/store/session";
+import { getUser, logout } from "../../store/account";
 
 import * as style from "./style.scss";
 
@@ -96,7 +96,7 @@ export const App: FunctionalComponent = () => {
                     Settings
                 </SidebarLink>
                 <SidebarLink
-                    onClick={() => dispatch(logoutUser())}
+                    onClick={() => dispatch(logout())}
                     icon={faSignOutAlt}
                 >
                     Sign out

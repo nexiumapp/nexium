@@ -7,9 +7,9 @@ import { Button, TextInput } from "/src/components/forms";
 import { Icon } from "/src/components/media";
 import { Divider } from "/src/components/layout";
 import { ApiError } from "/src/api";
-import { LoginError } from "/src/api/session/login";
+import { LoginError } from "/src/api/account";
 import { useAppDispatch } from "/src/store";
-import { loginPassword } from "/src/store/session";
+import { loginPassword } from "/src/store/account";
 import { Account } from "/src/models";
 import { useInput } from "/src/hooks";
 
@@ -71,10 +71,10 @@ export const Login: FunctionalComponent = () => {
         if (res.isErr()) {
             const error = res.error.code;
 
-            if (error === "unknownuser") {
-                fields.username[4]("This user does not exist.");
-            } else if (error === "passworderror") {
-                fields.password[4]("The given password was invalid.");
+            if (error === "loginfailed") {
+                fields.password[4]("Username and/or password is incorrect!");
+            } else if (error === "loggedin") {
+                setError("You are already logged in.");
             } else {
                 setError("An server error occured.");
             }

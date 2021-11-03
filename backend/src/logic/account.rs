@@ -1,6 +1,6 @@
 use lazy_static::lazy_static;
 use regex::Regex;
-use rocket::serde::Serialize;
+use serde::Serialize;
 use sqlx::PgConnection;
 use thiserror::Error;
 use uuid::Uuid;

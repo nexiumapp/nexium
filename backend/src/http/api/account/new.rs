@@ -1,24 +1,31 @@
-use std::net::SocketAddr;
-
-use jsonresponder::JsonResponder;
-use jsonwebtoken::EncodingKey;
-use rocket::http::Status;
-use rocket::serde::{json::Json, Deserialize, Serialize};
-use rocket::State;
+use actix_session::Session;
+use actix_web::{
+    http::StatusCode,
+    post,
+    web::{self, Json},
+    HttpResponse, ResponseError,
+};
+use serde::{Deserialize, Serialize};
 use sqlx::{Pool, Postgres};
 use thiserror::Error;
+use uuid::Uuid;
 
-use crate::environment::Environment;
-use crate::logic::{account, auth, session};
+use crate::http::{ApiError, UserGuard};
+use crate::logic::{account, auth};
 
-/// Route to create a new account.
-#[post("/new", data = "<data>")]
-pub async fn route(
-    addr: SocketAddr,
+/// Create a new account.
+#[post("/new")]
+async fn new_account(
     data: Json<BodyData>,
-    pool: &State<Pool<Postgres>>,
-    env: &State<Environment>,
+    user: Option<UserGuard<Uuid>>,
+    session: Session,
+    pool: web::Data<Pool<Postgres>>,
 ) -> Result<Json<Response>, RouteError> {
+    // Check that the current session is not logged in.
+    if user.is_some() {
+        return Err(RouteError::LoggedIn);
+    }
+
     // Start an database transaction.
     let mut conn = pool.begin().await.map_err(RouteError::DatabaseError)?;
 
@@ -35,28 +42,25 @@ pub async fn route(
         }
     };
 
-    // Now create the session associated with the account.
-    let key = &EncodingKey::from_secret(env.jwt_secret.as_bytes());
-    let session = session::Session::create(&mut conn, &account, &addr).await?;
-    let token = session::jwt::JwtToken::encode(&session, key)?;
-
     // Commit the changes to the database.
     conn.commit().await.map_err(RouteError::DatabaseError)?;
+
+    // Attach the user ID to the current session.
+    session
+        .insert("user", account.id)
+        .map_err(|_| RouteError::InternalError)?;
 
     info!(
         "New account created for {} ({}).",
         account.username, account.id
     );
 
-    Ok(Json(Response {
-        token: token.jwt,
-        account,
-    }))
+    Ok(Json(Response { account }))
 }
 
 /// Requested data for this route.
 #[derive(Deserialize)]
-pub struct BodyData {
+struct BodyData {
     username: String,
     auth: AuthType,
 }
@@ -73,30 +77,32 @@ enum AuthType {
 /// Success response of this route.
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Response {
+struct Response {
     account: account::Account,
-    token: String,
 }
 
 /// All possible error responses for this route.
-#[derive(Error, Debug, JsonResponder)]
-pub enum RouteError {
+#[derive(Error, Debug)]
+enum RouteError {
+    #[error("Session is already logged in.")]
+    LoggedIn,
     #[error("The given username is not valid.")]
     InvalidUsername,
-    #[error("Internal server error.")]
-    InternalError,
     #[error("Password is not complex enough.")]
     PasswordComplexity,
+    #[error("Internal server error.")]
+    InternalError,
     #[error("Account with username {0} already exists.")]
     AccountExists(String),
     #[error("An internal database error occured.")]
     DatabaseError(#[from] sqlx::Error),
 }
 
-impl<'a> RouteError {
-    /// Translate an route error to an code used for differentiating the errors.
-    fn code(&self) -> &'a str {
+impl<'a> ApiError<'a> for RouteError {
+    /// Convert the enum variant to a machine-readable name for the client.
+    fn error_code(&self) -> &'a str {
         match self {
+            RouteError::LoggedIn => "loggedin",
             RouteError::InvalidUsername => "invalidusername",
             RouteError::InternalError => "internalerror",
             RouteError::PasswordComplexity => "passwordcomplexity",
@@ -106,37 +112,22 @@ impl<'a> RouteError {
     }
 }
 
-impl From<RouteError> for Status {
-    /// Translate an route error to an Rocket status.
-    fn from(err: RouteError) -> Self {
-        match err {
-            RouteError::InvalidUsername => Status::BadRequest,
-            RouteError::InternalError => Status::InternalServerError,
-            RouteError::PasswordComplexity => Status::BadRequest,
-            RouteError::AccountExists(_) => Status::BadRequest,
-            RouteError::DatabaseError(_) => Status::ServiceUnavailable,
+impl ResponseError for RouteError {
+    /// Translate a route error to a HTTP status.
+    fn status_code(&self) -> StatusCode {
+        match self {
+            RouteError::LoggedIn => StatusCode::BAD_REQUEST,
+            RouteError::InvalidUsername => StatusCode::BAD_REQUEST,
+            RouteError::PasswordComplexity => StatusCode::BAD_REQUEST,
+            RouteError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
+            RouteError::AccountExists(_) => StatusCode::BAD_REQUEST,
+            RouteError::DatabaseError(_) => StatusCode::SERVICE_UNAVAILABLE,
         }
     }
-}
 
-/// Convert the internal error to an route error.
-impl From<auth::password::CreateError> for RouteError {
-    fn from(err: auth::password::CreateError) -> Self {
-        match err {
-            auth::password::CreateError::PasswordComplexity => RouteError::PasswordComplexity,
-            auth::password::CreateError::HashError => RouteError::InternalError,
-            auth::password::CreateError::DatabaseError(e) => RouteError::DatabaseError(e),
-        }
-    }
-}
-
-/// Convert the internal error to an route error.
-impl From<session::CreateError> for RouteError {
-    fn from(err: session::CreateError) -> Self {
-        match err {
-            session::CreateError::IpParseError => RouteError::InternalError,
-            session::CreateError::DatabaseError(e) => RouteError::DatabaseError(e),
-        }
+    /// Generate the error response.
+    fn error_response(&self) -> HttpResponse {
+        self.json()
     }
 }
 
@@ -151,8 +142,13 @@ impl From<account::CreateError> for RouteError {
     }
 }
 
-impl From<jsonwebtoken::errors::Error> for RouteError {
-    fn from(_: jsonwebtoken::errors::Error) -> Self {
-        RouteError::InternalError
+/// Convert the internal error to an route error.
+impl From<auth::password::CreateError> for RouteError {
+    fn from(err: auth::password::CreateError) -> Self {
+        match err {
+            auth::password::CreateError::PasswordComplexity => RouteError::PasswordComplexity,
+            auth::password::CreateError::HashError => RouteError::InternalError,
+            auth::password::CreateError::DatabaseError(e) => RouteError::DatabaseError(e),
+        }
     }
 }

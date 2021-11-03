@@ -1,6 +1,8 @@
-extern crate log;
+use std::env;
+
 #[macro_use]
-extern crate rocket;
+extern crate log;
+extern crate actix_web;
 
 mod database;
 mod environment;
@@ -8,8 +10,13 @@ mod http;
 mod logic;
 mod smtp;
 
-#[tokio::main]
+#[actix_web::main]
 async fn main() {
+    // Set the log level to info by default.
+    if env::var_os("RUST_LOG").is_none() {
+        env::set_var("RUST_LOG", "info,actix_web=error,sqlx=error");
+    }
+
     env_logger::init();
 
     let env = match environment::get() {
